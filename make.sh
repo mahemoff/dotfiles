@@ -9,7 +9,7 @@
 
 dir=~/dotfiles                    # dotfiles directory
 backupdir=~/dotfiles_backup          # old dotfiles backup directory
-files="bash_profile vimrc"    # list of files/folders to symlink in homedir
+files="bash_profile vimrc tmux.conf"    # list of files/folders to symlink in homedir
 
 ##########
 
@@ -26,7 +26,8 @@ echo "...done"
 # move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks 
 for file in $files; do
   echo "Moving any existing dotfiles from ~ to $backupdir"
+  if [ -f "$backupdir/.$file" ] ; then rm $backupdir/.$file ; fi # suppress silly "identical file error" from mv
   mv ~/.$file $backupdir
   echo "Creating symlink to $file in home directory."
-  ln -s $dir/$file ~/.$file
+  ln -sf $dir/$file ~/.$file
 done
