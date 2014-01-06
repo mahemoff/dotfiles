@@ -1,4 +1,4 @@
 dotfiles
 ========
 
-Dotfiles such as bash_profile and vimrc
+Dotfiles such as bash\_profile and vimrc
