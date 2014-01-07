@@ -110,6 +110,7 @@ if [[ -n "$SSH_CLIENT" && -z "$TMUX" ]] ; then
     # default.yml can be a symlink to a preferred initial session
     if [ -f $HOME/.tmuxinator/default.yml ] ; then
       exec tmuxinator default
+      exit
     else
       exec tmux new
       exit
