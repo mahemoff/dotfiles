@@ -5,6 +5,9 @@
 
 [ -z "$PS1" ] && return
 
+# PATH
+export PATH="$PATH:$HOME/bin"
+
 ### LOCAL MACHINE - BEFORE
 if [ -f $HOME/dotfiles/bash_before ] ; then
   source $HOME/dotfiles/bash_before
@@ -104,7 +107,11 @@ fi
 if [[ -n "$SSH_CLIENT" && -z "$TMUX" ]] ; then
   tmux has-session &> /dev/null
   if [ $? -eq 1 ]; then
-    exec tmux new
+    # default.yml can be a symlink to a preferred initial session
+    if [ -f $HOME/.tmuxinator/default.yml ] ; then
+      exec tmuxinator default
+    else
+      exec tmux new
     exit
   else
     exec tmux attach
