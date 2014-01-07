@@ -21,10 +21,11 @@ shopt -s globstar # Better globbing in file expansions
 PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 
 #### HISTORY
-HISTCONTROL=ignoreboth # Avoid noisy hbistory
+export HISTCONTROL=ignoreboth # Avoid noisy hbistory
 shopt -s histappend # Append, don't overwrite, history
-HISTSIZE=1000
-HISTFILESIZE=2000
+export HISTSIZE=1000
+export HISTFILESIZE=2000
+export EDITOR=vim
 
 ### COLORIZE
 if [ -x /usr/bin/dircolors ]; then
@@ -72,7 +73,9 @@ function ct { ctags -R --exclude=.git --exclude=log * ~/.rvm/gems/ruby-head/* ; 
 # TMUX
 function shell { tmux rename-window $1; ssh -o TCPKeepAlive=no -o ServerAliveInterval=15 $1; tmux rename-window 'bash'; }
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
+alias tx=tmux
 alias tm=~/prog/tmuxinator/bin/tmuxinator
+function killtmux { tmux ls | awk '{print $1}' | sed 's/://g' | xargs -I{} tmux kill-session -t {} ; }
 
 ### OSX
 if [ "$(uname)" == "Darwin" ]; then
@@ -110,11 +113,13 @@ if [[ -n "$SSH_CLIENT" && -z "$TMUX" ]] ; then
     # default.yml can be a symlink to a preferred initial session
     if [ -f $HOME/.tmuxinator/default.yml ] ; then
       exec tmuxinator default
-      exit
     else
       exec tmux new
-      exit
     fi
+    tmux unbind c-b
+    tmux set -g prefix c-a
+    tmux bind c-a send-prefix
+    exit
   else
     exec tmux attach
     exit
