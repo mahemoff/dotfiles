@@ -79,6 +79,15 @@ if [ "$(uname)" == "Darwin" ]; then
   function stopmysql { launchctl unload ~/Library/LaunchAgents/com.mysql.mysqld.plist; }
 fi
 
+### META - MANAGING THIS DOTFILE PROJECT
+
+# Example: addvimplugin https://github.com/scrooloose/nerdtree.git
+function addvimplugin {
+  cd $HOME/dotfiles
+  repo=$1
+  git subtree add --prefix vim/bundle/`basename $repo .git` master --squash
+}
+
 ### LOCAL MACHINE - AFTER
 if [ -f $HOME/dotfiles/bash_after ] ; then
   source $HOME/dotfiles/bash_after
