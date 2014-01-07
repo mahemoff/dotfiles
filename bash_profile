@@ -85,7 +85,7 @@ fi
 function addvimplugin {
   cd $HOME/dotfiles
   repo=$1
-  git subtree add --prefix vim/bundle/`basename $repo .git` master --squash
+  git subtree add --prefix vim/bundle/`basename $repo .git` $repo master --squash
 }
 
 ### LOCAL MACHINE - AFTER
