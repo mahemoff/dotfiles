@@ -98,3 +98,16 @@ function updatevimplugin {
 if [ -f $HOME/dotfiles/bash_after ] ; then
   source $HOME/dotfiles/bash_after
 fi
+
+
+# FINALLY, ENSURE TMUX SESSION FOR REMOTE SHELLS
+if [[ -n "$SSH_CLIENT" && -z "$TMUX" ]] ; then
+  tmux has-session &> /dev/null
+  if [ $? -eq 1 ]; then
+    exec tmux new
+    exit
+  else
+    exec tmux attach
+    exit
+  fi
+fi
