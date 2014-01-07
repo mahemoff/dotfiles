@@ -116,12 +116,15 @@ if [[ -n "$SSH_CLIENT" && -z "$TMUX" ]] ; then
     else
       exec tmux new
     fi
-    tmux unbind c-b
-    tmux set -g prefix c-a
-    tmux bind c-a send-prefix
     exit
   else
     exec tmux attach
     exit
   fi
+fi
+
+if [[ -n "$SSH_CLIENT" && -n "$TMUX" ]] ; then
+  tmux unbind c-b
+  tmux set -g prefix c-a
+  tmux bind c-a send-prefix
 fi
