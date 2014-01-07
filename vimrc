@@ -25,6 +25,7 @@ set modeline
 set modelines=4
 set nostartofline
 set showcmd
+set secure
 
 nmap Q gq
 nmap <Leader>n <plug>NERDTreeTabsToggle<CR>
