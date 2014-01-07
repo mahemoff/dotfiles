@@ -5,8 +5,7 @@ Unix dotfiles such as bash\_profile and vimrc, designed to be cloned onto new
 machines. To bootstrap a new machine, git clone this and run make.sh, which
 will set up the symlinks.
 
-Installing Vim Plugins
-======================
+### Installing Vim Plugins
 
 Based on
 [this](http://endot.org/2011/05/18/git-submodules-vs-subtrees-for-vim-plugins/),
