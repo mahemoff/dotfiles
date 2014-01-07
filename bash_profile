@@ -123,6 +123,9 @@ if [[ -n "$SSH_CLIENT" && -z "$TMUX" ]] ; then
   fi
 fi
 
+# Default tmux prefix uses c-b so we use c-a when we detect we're in a remote tmux window
+# This gets way better using Caps Lock for c-b and section key (§) for c-a ...
+# See: https://gist.github.com/mahemoff/5288473
 if [[ -n "$SSH_CLIENT" && -n "$TMUX" ]] ; then
   tmux unbind c-b
   tmux set -g prefix c-a
