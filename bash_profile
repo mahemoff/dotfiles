@@ -88,6 +88,12 @@ function addvimplugin {
   git subtree add --prefix vim/bundle/`basename $repo .git` $repo master --squash
 }
 
+function updatevimplugin {
+  cd $HOME/dotfiles
+  repo=$1
+  git subtree pull --prefix vim/bundle/`basename $repo .git` $repo master --squash
+}
+
 ### LOCAL MACHINE - AFTER
 if [ -f $HOME/dotfiles/bash_after ] ; then
   source $HOME/dotfiles/bash_after
