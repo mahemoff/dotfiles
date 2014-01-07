@@ -112,7 +112,8 @@ if [[ -n "$SSH_CLIENT" && -z "$TMUX" ]] ; then
       exec tmuxinator default
     else
       exec tmux new
-    exit
+      exit
+    fi
   else
     exec tmux attach
     exit
