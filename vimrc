@@ -17,7 +17,7 @@ set scrolloff=999
 set shiftwidth=2 tabstop=2 expandtab
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*.sassc
 set backupdir=$HOME/.vim/_backup
-set directory=$HOME/.vim/_temp
+set directory=$HOME/.vim/_tmp
 set backup
 set shell=bash
 set gdefault
