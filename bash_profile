@@ -128,6 +128,6 @@ fi
 # See: https://gist.github.com/mahemoff/5288473
 if [[ -n "$SSH_CLIENT" && -n "$TMUX" ]] ; then
   tmux unbind c-b
-  tmux set -g prefix c-a
+  tmux set -g prefix c-a > /dev/null
   tmux bind c-a send-prefix
 fi
