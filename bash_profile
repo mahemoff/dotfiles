@@ -132,6 +132,6 @@ if [[ -n "$SSH_CLIENT" && -n "$TMUX" ]] ; then
   tmux unbind c-b
   tmux set -g prefix c-a > /dev/null
   tmux bind c-a send-prefix
-  tmux set option: status-bg -> green > /dev/null
-  tmux set option: status-fg -> black > /dev/null
+  tmux set-window-option -g status-bg green
+  tmux set-window-option -g status-fg black
 fi
