@@ -6,7 +6,7 @@
 [ -z "$PS1" ] && return
 
 # PATH
-export PATH="$PATH:$HOME/bin"
+export PATH="$PATH:$HOME/bin:$HOME/dotfiles/bin"
 
 ### LOCAL MACHINE - BEFORE
 if [ -f $HOME/dotfiles/bash_before ] ; then
@@ -127,6 +127,7 @@ fi
 # Default tmux prefix uses c-b so we use c-a when we detect we're in a remote tmux window
 # This gets way better using Caps Lock for c-b and section key (§) for c-a ...
 # Ideally, should only run this once per server instance (maybe using tmux -c after launch??)
+#    maybe using if-shell 'test "$(uname)" = "Linux"' 'source ~/.tmux-linux.conf'
 # See: https://gist.github.com/mahemoff/5288473
 if [[ -n "$SSH_CLIENT" && -n "$TMUX" ]] ; then
   tmux unbind c-b
@@ -134,4 +135,7 @@ if [[ -n "$SSH_CLIENT" && -n "$TMUX" ]] ; then
   tmux bind c-a send-prefix
   tmux set-window-option -g status-bg green > /dev/null
   tmux set-window-option -g status-fg black > /dev/null
+  # https://gist.github.com/burke/5960455
+  tmux bind C-c run "tmux save-buffer - | pbcopy-remote"
+  tmux bind C-v run "tmux set-buffer $(pbpaste-remote); tmux paste-buffer"
 fi
