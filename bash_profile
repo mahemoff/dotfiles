@@ -135,4 +135,3 @@ if [[ -n "$SSH_CLIENT" && -n "$TMUX" ]] ; then
   tmux set-window-option -g status-bg green > /dev/null
   tmux set-window-option -g status-fg black > /dev/null
 fi
-
