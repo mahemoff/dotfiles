@@ -27,7 +27,7 @@ echo "...done"
 for file in $files; do
   echo "Moving any existing dotfiles from ~ to $backupdir"
   if [ -f "$backupdir/.$file" ] ; then rm $backupdir/.$file ; fi # suppress silly "identical file error" from mv
-  mv ~/.$file $backupdir
+  mv ~/.$file $backupdir 2>/dev/null
   echo "Creating symlink to $file in home directory."
   ln -sf $dir/$file ~/.$file
 done
