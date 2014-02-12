@@ -93,3 +93,52 @@ nnoremap q? ?
 xnoremap q? ?
 "  " Have <esc> leave cmdline-window
 autocmd CmdwinEnter * nnoremap <buffer> <esc> :q\|echo ""<cr>
+
+" ------------------------------------------------------------------------------
+" Enhance command window
+" http://vim.wikia.com/wiki/Enhanced_command_window
+" ------------------------------------------------------------------------------
+
+augroup ECW_au
+  " musn't do au! again
+  au CmdwinEnter : imap <UP> <C-O>y0<C-O>:let@/='^'.@0<CR><C-O>?<Esc><Esc>
+  au CmdwinLeave : iunmap <UP>
+  au CmdwinEnter : imap <DOWN> <C-O>y0<C-O>:let@/='^'.@0<CR><C-O>/<Esc><Esc>
+  au CmdwinLeave : iunmap <DOWN>
+  au CmdwinLeave : :let @/=""
+augroup END
+
+augroup ECW_au
+  " musn't do au! again
+  au CmdwinEnter : imap <C-D> <C-O>y0<C-O>:ECWCtrlD<CR><Esc>
+  au CmdwinLeave : iunmap <C-D>
+augroup END
+
+function! s:ECWCtrlD()
+  if (match(@", '^ *[a-z]\?map\s\s*\(\S\S*\)\?\s*$') >=0 )
+    let s:foo = @"
+    let save_more=&more
+    set nomore
+    execute ':redir @" |'.s:foo.'|redir END'
+    let &more = save_more
+    put=@"
+    "Keep this next command even though Vim complains -- it is
+    "a work-around for some "unknown bad thing"
+    silent normal
+    return
+  endif
+  "sf and find can have space separated arguments
+  if (match(@", '^ *\(\(sf\)\|\(find\)\)\ *') >=0 )
+    let s:foo = substitute(@", '^ *\(\(sf\)\|\(find\)\)\ *', '', '')
+  else "pick the trailing non-space separated stuff
+    let s:foo = substitute(@", '\(.\{-}\)\(\S\S*\s*\)$', '\2', '')
+  endif
+  let s:foo = substitute(s:foo, '\s*$', '*', '') "OK if ending has two wild-cards
+  let @"=glob(s:foo)
+  if(@" == "") | let @"='no match' | endif
+  put=@"
+endfunction
+
+if !exists(":ECWCtrlD")
+  command -nargs=0 ECWCtrlD call s:ECWCtrlD()
+endif
