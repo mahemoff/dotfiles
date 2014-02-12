@@ -26,6 +26,7 @@ set modelines=4
 set nostartofline
 set showcmd
 set secure
+set number
 
 nmap Q gq
 nmap <Leader>n <plug>NERDTreeTabsToggle<CR>
@@ -35,6 +36,7 @@ nmap to :tabonly<cr>
 map <Leader>s :NERDTreeFind<CR>
 map <Leader>= <c-w>o:set nonumber<cr>
 map <Leader>- <c-w>o:set number<cr>
+map <Leader>a :Ag<space>
 
 au FileType crontab set nobackup nowritebackup
 
@@ -66,3 +68,28 @@ function! PopulatePasteBufferFromOSX()
 endfunction
 nnoremap <leader>6 :call PopulatePasteBufferFromOSX()<cr>
 nnoremap <leader>7 :call PropagatePasteBufferToOSX()<cr>
+
+"let agprg="Ag --smart-case"
+
+" https://github.com/paradigm/dotfiles/blob/master/.vimrc#L103
+" ------------------------------------------------------------------------------
+"  " - cmdline-window_(mappings)
+"  -
+"  "
+"  ------------------------------------------------------------------------------
+"
+"  " Swap default ':', '/' and '?' with cmdline-window equivalent.
+nnoremap : q:i
+xnoremap : q:i
+nnoremap / q/i
+xnoremap / q/i
+nnoremap ? q?i
+xnoremap ? q?i
+nnoremap q: :
+xnoremap q: :
+nnoremap q/ /
+xnoremap q/ /
+nnoremap q? ?
+xnoremap q? ?
+"  " Have <esc> leave cmdline-window
+autocmd CmdwinEnter * nnoremap <buffer> <esc> :q\|echo ""<cr>
