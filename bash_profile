@@ -16,7 +16,7 @@ fi
 # SHELL OPTIONS
 set -o vi
 shopt -s checkwinsize # Sync window size with shell
-shopt -s globstar # Better globbing in file expansions
+#shopt -s globstar # Better globbing in file expansions
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)" # Binary less support
 PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 
@@ -139,3 +139,12 @@ if [[ -n "$SSH_CLIENT" && -n "$TMUX" ]] ; then
   tmux bind C-c run "tmux save-buffer - | pbcopy-remote"
   tmux bind C-v run "tmux set-buffer $(pbpaste-remote); tmux paste-buffer"
 fi
+
+### OSX TMUX
+if [[ "$(uname)" == "Darwin" && -n "$TMUX" ]] ; then
+  tmux set-option -g default-command "reattach-to-user-namespace -l bash" > /dev/null
+  tmux bind C-c run "tmux save-buffer - | reattach-to-user-namespace pbcopy"
+  tmux bind C-v run "reattach-to-user-namespace pbpaste | tmux load-buffer - && tmux paste-buffer"
+fi
+
+
