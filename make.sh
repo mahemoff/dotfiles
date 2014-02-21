@@ -5,6 +5,8 @@
 # This script creates symlinks from the home directory to any desired dotfiles in ~/dotfiles
 ############################
 
+cd `dirname $0`
+
 ########## Variables
 
 dir=~/dotfiles                    # dotfiles directory
