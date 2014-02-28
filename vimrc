@@ -79,20 +79,20 @@ nnoremap <leader>7 :call PropagatePasteBufferToOSX()<cr>
 "  ------------------------------------------------------------------------------
 "
 "  " Swap default ':', '/' and '?' with cmdline-window equivalent.
-nnoremap : q:i
-xnoremap : q:i
-nnoremap / q/i
-xnoremap / q/i
-nnoremap ? q?i
-xnoremap ? q?i
-nnoremap q: :
-xnoremap q: :
-nnoremap q/ /
-xnoremap q/ /
-nnoremap q? ?
-xnoremap q? ?
+" nnoremap : q:i
+" xnoremap : q:i
+" nnoremap / q/i
+" xnoremap / q/i
+" nnoremap ? q?i
+" xnoremap ? q?i
+" nnoremap q: :
+" xnoremap q: :
+" nnoremap q/ /
+" xnoremap q/ /
+" nnoremap q? ?
+" xnoremap q? ?
 "  " Have <esc> leave cmdline-window
-autocmd CmdwinEnter * nnoremap <buffer> <esc> :q\|echo ""<cr>
+" autocmd CmdwinEnter * nnoremap <buffer> <esc> :q\|echo ""<cr>
 
 " ------------------------------------------------------------------------------
 " Enhance command window
