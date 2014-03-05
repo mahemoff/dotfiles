@@ -1,0 +1,11 @@
+set editing-mode vi
+set keymap vi-command
+set show-all-if-ambiguous on
+set completion-ignore-case on
+menu-complete-display-prefix on
+"p": "i !!*\r"
+
+"\e\e[A": history-search-backward
+"\e\e[B": history-search-forward
+"\e[Z": menu-complete-backward
+"p": self-insert

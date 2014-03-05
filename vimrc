@@ -30,6 +30,7 @@ set number
 
 nmap Q gq
 nmap <Leader>n <plug>NERDTreeTabsToggle<CR>
+let NERDTreeShowHidden=1 " Show dotfiles
 nmap T gT
 nmap Y gt
 nmap to :tabonly<cr>
