@@ -107,21 +107,21 @@ fi
 
 
 # FINALLY, ENSURE TMUX SESSION FOR REMOTE SHELLS
-if [[ -n "$SSH_CLIENT" && -z "$TMUX" ]] ; then
-  tmux has-session &> /dev/null
-  if [ $? -eq 1 ]; then
-    # default.yml can be a symlink to a preferred initial session
-    if [ -f $HOME/.tmuxinator/default.yml ] ; then
-      exec tmuxinator default
-    else
-      exec tmux new
-    fi
-    exit
-  else
-    exec tmux attach
-    exit
-  fi
-fi
+# if [[ -n "$SSH_CLIENT" && -z "$TMUX" ]] ; then
+  # tmux has-session &> /dev/null
+  # if [ $? -eq 1 ]; then
+    # # default.yml can be a symlink to a preferred initial session
+    # if [ -f $HOME/.tmuxinator/default.yml ] ; then
+      # exec tmuxinator default
+    # else
+      # exec tmux new
+    # fi
+    # exit
+  # else
+    # exec tmux attach
+    # exit
+  # fi
+# fi
 
 # Setup "inner" tmux settings, ie those inside a remote shell
 # Default tmux prefix uses c-b so we use c-a when we detect we're in a remote tmux window
