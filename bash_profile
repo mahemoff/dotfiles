@@ -51,9 +51,11 @@ alias vi=vim
 alias he=heroku
 alias cront="VIM_CRONTAB=true /usr/bin/crontab -e"
 alias server='python -m SimpleHTTPServer'
+alias ti='tig status'
 function zipp { zip -r `basename $1`'.zip' $1 -x '*.git*'; }
 function swp { mv -v `find . -name '*.sw?'` /tmp ; }
 function ng { echo -e \\033c ; } # No Garbage (or use ctrl-o)
+function yoink { wget -c -t 0 --timeout=60 --waitretry=60 $1 ; } # auto-resume
 
 # RUBY/RAILS
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
@@ -146,5 +148,3 @@ if [[ "$(uname)" == "Darwin" && -n "$TMUX" ]] ; then
   tmux bind C-c run "tmux save-buffer - | reattach-to-user-namespace pbcopy"
   tmux bind C-v run "reattach-to-user-namespace pbpaste | tmux load-buffer - && tmux paste-buffer"
 fi
-
-
