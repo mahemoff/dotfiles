@@ -50,12 +50,27 @@ alias hi='history'
 alias vi=vim
 alias he=heroku
 alias cront="VIM_CRONTAB=true /usr/bin/crontab -e"
-alias server='python -m SimpleHTTPServer'
 alias ti='tig status'
 function zipp { zip -r `basename $1`'.zip' $1 -x '*.git*'; }
 function swp { mv -v `find . -name '*.sw?'` /tmp ; }
 function ng { echo -e \\033c ; } # No Garbage (or use ctrl-o)
 function yoink { wget -c -t 0 --timeout=60 --waitretry=60 $1 ; } # auto-resume
+
+# PYTHON
+alias server='python -m SimpleHTTPServer'
+export WORKON_HOME=$HOME/.virtualenvs
+[ -f /usr/local/bin/virtualenvwrapper.sh ] && source /usr/local/bin/virtualenvwrapper.sh # see http://bit.ly/pyvirtualenv
+# http://blog.doughellmann.com/2010/01/virtualenvwrapper-tips-and-tricks.html
+alias v='workon'
+alias v.deactivate='deactivate'
+alias v.mk='mkvirtualenv --no-site-packages'
+alias v.mk_withsitepackages='mkvirtualenv'
+alias v.rm='rmvirtualenv'
+alias v.switch='workon'
+alias v.add2virtualenv='add2virtualenv'
+alias v.cdsitepackages='cdsitepackages'
+alias v.cd='cdvirtualenv'
+alias v.lssitepackages='lssitepackages'
 
 # RUBY/RAILS
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
