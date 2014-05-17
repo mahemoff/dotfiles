@@ -51,10 +51,13 @@ alias vi=vim
 alias he=heroku
 alias cront="VIM_CRONTAB=true /usr/bin/crontab -e"
 alias ti='tig status'
+alias pd='pushd'
+alias po='popd'
 function zipp { zip -r `basename $1`'.zip' $1 -x '*.git*'; }
 function swp { mv -v `find . -name '*.sw?'` /tmp ; }
 function ng { echo -e \\033c ; } # No Garbage (or use ctrl-o)
 function yoink { wget -c -t 0 --timeout=60 --waitretry=60 $1 ; } # auto-resume
+function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; }
 
 # PYTHON
 alias server='python -m SimpleHTTPServer'
@@ -76,16 +79,19 @@ alias v.lssitepackages='lssitepackages'
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
 rake='bundle exec rake'
 function blat { rake db:drop && rake db:create && rake db:migrate && rake db:schema:dump && rake db:fixtures:load && rake db:test:prepare; }
-alias brake='bundle exec rake'
 alias bruby='bundle exec ruby'
-alias brails='bundle exec rails'
 alias brake='bundle exec rake'
+alias brails='bundle exec rails'
+alias truby='RAILS_ENV=test bundle exec ruby'
+alias trake='RAILS_ENV=test bundle exec rake'
+alias trails='RAILS_ENV=test bundle exec rails'
 alias assets='rake assets:precompile RAILS_ENV=production'
 function buni { bundle exec unicorn_rails -p $1; }
 alias buni3='buni 3000'
 alias buni4='buni 4000'
 alias buni5='buni 5000'
 function ct { ctags -R --exclude=.git --exclude=log * ~/.rvm/gems/ruby-head/* ; }
+function rt { testable=$(echo 'test:'`echo $1 | sed 's/#/:/g'`) ; brake $testable; }
 
 # TMUX
 function shell { tmux rename-window $1; ssh -o TCPKeepAlive=no -o ServerAliveInterval=15 $1; tmux rename-window 'bash'; }
