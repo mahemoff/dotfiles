@@ -53,6 +53,7 @@ alias cront="VIM_CRONTAB=true /usr/bin/crontab -e"
 alias ti='tig status'
 alias pd='pushd'
 alias po='popd'
+alias ag='ag --silent'
 function zipp { zip -r `basename $1`'.zip' $1 -x '*.git*'; }
 function swp { mv -v `find . -name '*.sw?'` /tmp ; }
 function ng { echo -e \\033c ; } # No Garbage (or use ctrl-o)
@@ -106,6 +107,7 @@ if [ "$(uname)" == "Darwin" ]; then
   function iphonebackupenable  { defaults write com.apple.iTunes DeviceBackupsDisabled -bool false ; }
   function startmysql { launchctl load ~/Library/LaunchAgents/com.mysql.mysqld.plist; }
   function stopmysql { launchctl unload ~/Library/LaunchAgents/com.mysql.mysqld.plist; }
+  function flushdns { sudo killall -HUP mDNSResponder ; }
 fi
 
 ### META - MANAGING THIS DOTFILE PROJECT
