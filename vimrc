@@ -20,7 +20,6 @@ set backupdir=$HOME/.vim/_backup
 set directory=$HOME/.vim/_tmp
 set backup
 set shell=bash
-set gdefault
 set modeline
 set modelines=4
 set nostartofline
