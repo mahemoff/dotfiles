@@ -54,6 +54,7 @@ alias ti='tig status'
 alias pd='pushd'
 alias po='popd'
 alias ag='ag --silent'
+function wh { locate $1 | grep "$1$" ; }
 function zipp { zip -r `basename $1`'.zip' $1 -x '*.git*'; }
 function swp { mv -v `find . -name '*.sw?'` /tmp ; }
 function ng { echo -e \\033c ; } # No Garbage (or use ctrl-o)
@@ -99,6 +100,7 @@ function shell { tmux rename-window $1; ssh -o TCPKeepAlive=no -o ServerAliveInt
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
 alias tx=tmux
 alias tm=~/prog/tmuxinator/bin/tmuxinator
+tma='tmux attach'
 function killtmux { tmux ls | awk '{print $1}' | sed 's/://g' | xargs -I{} tmux kill-session -t {} ; }
 
 ### OSX
