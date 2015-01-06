@@ -61,6 +61,11 @@ function ng { echo -e \\033c ; } # No Garbage (or use ctrl-o)
 function yoink { wget -c -t 0 --timeout=60 --waitretry=60 $1 ; } # auto-resume
 function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; }
 
+### OPS
+
+alias ans='ansible'
+function ansplay { date ; ansible-playbook $* ; date ; }
+
 # PYTHON
 alias server='python -m SimpleHTTPServer'
 export WORKON_HOME=$HOME/.virtualenvs
@@ -78,9 +83,9 @@ alias v.cd='cdvirtualenv'
 alias v.lssitepackages='lssitepackages'
 
 # RUBY/RAILS
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
 rake='bundle exec rake'
 function blat { rake db:drop && rake db:create && rake db:migrate && rake db:schema:dump && rake db:fixtures:load && rake db:test:prepare; }
+function migrate { rake db:migrate && rake db:test:prepare; }
 alias bruby='bundle exec ruby'
 alias brake='bundle exec rake'
 alias brails='bundle exec rails'
@@ -88,7 +93,9 @@ alias truby='RAILS_ENV=test bundle exec ruby'
 alias trake='RAILS_ENV=test bundle exec rake'
 alias trails='RAILS_ENV=test bundle exec rails'
 alias assets='rake assets:precompile RAILS_ENV=production'
-function buni { bundle exec unicorn_rails -p $1; }
+#function buni { bundle exec unicorn_rails -p $1; }
+function bunidev { bundle exec unicorn_rails -c config/unicorn_dev.rb ; }
+function buni { bundle exec unicorn_rails -c config/unicorn.rb  -p $1; }
 alias buni3='buni 3000'
 alias buni4='buni 4000'
 alias buni5='buni 5000'
@@ -132,7 +139,6 @@ if [ -f $HOME/dotfiles/bash_after ] ; then
   source $HOME/dotfiles/bash_after
 fi
 
-
 # FINALLY, ENSURE TMUX SESSION FOR REMOTE SHELLS
 # if [[ -n "$SSH_CLIENT" && -z "$TMUX" ]] ; then
   # tmux has-session &> /dev/null
@@ -173,3 +179,5 @@ if [[ "$(uname)" == "Darwin" && -n "$TMUX" ]] ; then
   tmux bind C-c run "tmux save-buffer - | reattach-to-user-namespace pbcopy"
   tmux bind C-v run "reattach-to-user-namespace pbpaste | tmux load-buffer - && tmux paste-buffer"
 fi
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
