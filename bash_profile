@@ -42,6 +42,7 @@ alias bp='vi $HOME/.bash_profile'
 alias sbp='. $HOME/.bash_profile'
 alias a='vi $HOME/.bash_profile'
 alias m=more
+alias md='mkdir'
 alias l=less
 alias la='ls -AF'
 alias ll='ls -latr'
@@ -54,17 +55,25 @@ alias ti='tig status'
 alias pd='pushd'
 alias po='popd'
 alias ag='ag --silent'
+alias lo='locate'
 function wh { locate $1 | grep "$1$" ; }
 function zipp { zip -r `basename $1`'.zip' $1 -x '*.git*'; }
 function swp { mv -v `find . -name '*.sw?'` /tmp ; }
 function ng { echo -e \\033c ; } # No Garbage (or use ctrl-o)
 function yoink { wget -c -t 0 --timeout=60 --waitretry=60 $1 ; } # auto-resume
 function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; }
+function rmvimswaps { find ./ -type f -name "\.*sw[klmnop]" -delete ; }
 
 ### OPS
 
 alias ans='ansible'
 function ansplay { date ; ansible-playbook $* ; date ; }
+
+### HTTP CLIENT
+# http://stackoverflow.com/questions/18215389/how-do-i-measure-request-and-response-times-at-once-using-curl
+function perf {
+  curl -o /dev/null  -s -w "%{time_connect} + %{time_starttransfer} = %{time_total}\n" "$1"
+}
 
 # PYTHON
 alias server='python -m SimpleHTTPServer'
@@ -85,18 +94,34 @@ alias v.lssitepackages='lssitepackages'
 # RUBY/RAILS
 rake='bundle exec rake'
 function blat { rake db:drop && rake db:create && rake db:migrate && rake db:schema:dump && rake db:fixtures:load && rake db:test:prepare; }
-function migrate { rake db:migrate && rake db:test:prepare; }
+function migrate { bundle exec rake db:migrate && bundle exec rake db:test:prepare; }
 alias bruby='bundle exec ruby'
 alias brake='bundle exec rake'
 alias brails='bundle exec rails'
+alias ss='spring stop'
+alias trake='RAILS_ENV=test spring rake test'
+alias strake='spring stop; RAILS_ENV=test spring rake test'
+alias srails='spring rails'
+alias srake='spring rake'
+#alias sbrails='spring stop; bundle exec rails'
+#alias migrate='bundle exec rake migrate'
+#function truby {
+  # can use progress, outline, pretty, turn ...
+  #RAILS_ENV=test bundle exec ruby $* --tapy | bundle exec tapout progress
+#}
 alias truby='RAILS_ENV=test bundle exec ruby'
-alias trake='RAILS_ENV=test bundle exec rake'
+alias tap='bundle exec tapout'
 alias trails='RAILS_ENV=test bundle exec rails'
+alias spr='spring stop'
+alias strails='spring stop; RAILS_ENV=test bundle exec rails'
+alias struby='spring stop; RAILS_ENV=test bundle exec ruby'
 alias assets='rake assets:precompile RAILS_ENV=production'
 #function buni { bundle exec unicorn_rails -p $1; }
 function bunidev { bundle exec unicorn_rails -c config/unicorn_dev.rb ; }
 function buni { bundle exec unicorn_rails -c config/unicorn.rb  -p $1; }
+function sbuni { spring stop; bundle exec unicorn_rails -c config/unicorn.rb  -p $1; }
 alias buni3='buni 3000'
+alias sbuni3='spring stop; buni 3000'
 alias buni4='buni 4000'
 alias buni5='buni 5000'
 function ct { ctags -R --exclude=.git --exclude=log * ~/.rvm/gems/ruby-head/* ; }
