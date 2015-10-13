@@ -6,11 +6,12 @@
 [ -z "$PS1" ] && return
 
 # PATH
-export PATH="$PATH:$HOME/bin:$HOME/dotfiles/bin"
+export DOTFILES="$HOME/DOTFILES"
+export PATH="$PATH:$HOME/bin:$DOTFILES/bin"
 
 ### LOCAL MACHINE - BEFORE
-if [ -f $HOME/dotfiles/bash_before ] ; then
-  source $HOME/dotfiles/bash_before
+if [ -f $DOTFILES/bash_before ] ; then
+  source $DOTFILES/bash_before
 fi
 
 # SHELL OPTIONS
@@ -18,7 +19,12 @@ set -o vi
 shopt -s checkwinsize # Sync window size with shell
 #shopt -s globstar # Better globbing in file expansions
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)" # Binary less support
-PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+if [ "$OSTYPE" == 'LINUX' ] ; then
+  #export PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w\$
+  export PS1="\${debian_chroot:+(\$debian_chroot)}\u@\h:\w \[$txtcyn\]\$git_branch\[$txtred\]\$git_dirty\[$txtrst\]\$ "
+else
+  export PS1="\u@\h:\w \[$txtcyn\]\$git_branch\[$txtred\]\$git_dirty\[$txtrst\]\$ "
+fi
 
 #### HISTORY
 export HISTCONTROL=ignoreboth # Avoid noisy hbistory
@@ -63,6 +69,7 @@ function ng { echo -e \\033c ; } # No Garbage (or use ctrl-o)
 function yoink { wget -c -t 0 --timeout=60 --waitretry=60 $1 ; } # auto-resume
 function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; }
 function rmvimswaps { find ./ -type f -name "\.*sw[klmnop]" -delete ; }
+function timestamp { date +"%Y-%m-%d-%H-%M-%S" ; }
 
 ### OPS
 
@@ -134,6 +141,11 @@ alias tx=tmux
 alias tm=~/prog/tmuxinator/bin/tmuxinator
 tma='tmux attach'
 function killtmux { tmux ls | awk '{print $1}' | sed 's/://g' | xargs -I{} tmux kill-session -t {} ; }
+
+# GIT
+alias co='git co'
+source $DOTFILES/projects/git-aware-prompt/main.sh
+source $DOTFILES/bin/git-completion.bash
 
 ### OSX
 if [ "$(uname)" == "Darwin" ]; then
