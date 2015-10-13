@@ -144,6 +144,9 @@ function killtmux { tmux ls | awk '{print $1}' | sed 's/://g' | xargs -I{} tmux 
 
 # GIT
 alias co='git co'
+__git_complete co _git_checkout
+alias merge='git merge'
+__git_complete merge _git_merge
 source $DOTFILES/projects/git-aware-prompt/main.sh
 source $DOTFILES/bin/git-completion.bash
 
