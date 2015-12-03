@@ -56,7 +56,7 @@ function! DoPrettyXML()
 endfunction
 command! PrettyXML call DoPrettyXML()
 
-" https://gist.github.com/burke/5960455
+" https://gist.github.com/burke/5960456
 function! PropagatePasteBufferToOSX()
   let @n=getreg("*")
   call system('pbcopy-remote', @n)
@@ -71,7 +71,7 @@ nnoremap <leader>7 :call PropagatePasteBufferToOSX()<cr>
 
 "let agprg="Ag --smart-case"
 
-" https://github.com/paradigm/dotfiles/blob/master/.vimrc#L103
+" https://github.com/paradigm/dotfiles/blob/master/.vimrc#L104
 " ------------------------------------------------------------------------------
 "  " - cmdline-window_(mappings)
 "  -

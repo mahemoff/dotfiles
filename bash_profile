@@ -65,19 +65,6 @@ alias lo='locate'
 function wh { locate $1 | grep "$1$" ; }
 function zipp { zip -r `basename $1`'.zip' $1 -x '*.git*'; }
 function swp { mv -v `find . -name '*.sw?'` /tmp ; }
-function ng { echo -e \\033c ; } # No Garbage (or use ctrl-o)
-function yoink { wget -c -t 0 --timeout=60 --waitretry=60 $1 ; } # auto-resume
-function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; }
-function rmvimswaps { find ./ -type f -name "\.*sw[klmnop]" -delete ; }
-function timestamp { date +"%Y-%m-%d-%H-%M-%S" ; }
-
-### OPS
-
-alias ans='ansible'
-function ansplay { date ; ansible-playbook $* ; date ; }
-
-### HTTP CLIENT
-# http://stackoverflow.com/questions/18215389/how-do-i-measure-request-and-response-times-at-once-using-curl
 function perf {
   curl -o /dev/null  -s -w "%{time_connect} + %{time_starttransfer} = %{time_total}\n" "$1"
 }
@@ -143,12 +130,22 @@ tma='tmux attach'
 function killtmux { tmux ls | awk '{print $1}' | sed 's/://g' | xargs -I{} tmux kill-session -t {} ; }
 
 # GIT
+export GITAWAREPROMPT=$DOTFILES/projects/git-aware-prompt
 source $DOTFILES/projects/git-aware-prompt/main.sh
 source $DOTFILES/bin/git-completion.bash
-alias co='git co'
+alias gco='git co'
 __git_complete co _git_checkout
-alias merge='git merge'
+alias gmerge='git merge'
 __git_complete merge _git_merge
+GITS='add bisect branch checko clone commit diff fetch grep init log merge mv pull push rebase reset rm show status tag'
+for cmd in `cat $DOTFILES/.git-commands.txt` ; do
+  alias "g$cmd"="git $cmd"
+  __git_complete $cmd _git_$cmd
+done
+alias gca='git commit -a'
+function gc { git commit -a --message="$*" ; }
+alias gd='git diff'
+alias gl='git log'
 
 ### OSX
 if [ "$(uname)" == "Darwin" ]; then
