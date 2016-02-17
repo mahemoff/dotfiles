@@ -45,6 +45,7 @@ fi
 ### ALIASES
 alias ..='cd ..'
 alias bp='vi $HOME/.bash_profile'
+alias ba='vi $HOME/.bash_after'
 alias sbp='. $HOME/.bash_profile'
 alias a='vi $HOME/.bash_profile'
 alias m=more
@@ -92,11 +93,14 @@ function migrate { bundle exec rake db:migrate && bundle exec rake db:test:prepa
 alias bruby='bundle exec ruby'
 alias brake='bundle exec rake'
 alias brails='bundle exec rails'
+alias ssbrails='spring stop; bundle exec rails'
 alias ss='spring stop'
+alias srake='RAILS_ENV=test spring rake'
 alias trake='RAILS_ENV=test spring rake test'
-alias strake='spring stop; RAILS_ENV=test spring rake test'
+alias sstrake='spring stop; RAILS_ENV=test spring rake test'
 alias srails='spring rails'
-alias srake='spring rake'
+alias ssrails='spring stop; brails'
+alias ssrake='spring stop; brake'
 #alias sbrails='spring stop; bundle exec rails'
 #alias migrate='bundle exec rake migrate'
 #function truby {
@@ -125,7 +129,7 @@ function rt { testable=$(echo 'test:'`echo $1 | sed 's/#/:/g'`) ; brake $testabl
 function shell { tmux rename-window $1; ssh -o TCPKeepAlive=no -o ServerAliveInterval=15 $1; tmux rename-window 'bash'; }
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
 alias tx=tmux
-alias tm=~/prog/tmuxinator/bin/tmuxinator
+alias tm=tmuxinator
 tma='tmux attach'
 function killtmux { tmux ls | awk '{print $1}' | sed 's/://g' | xargs -I{} tmux kill-session -t {} ; }
 
@@ -146,6 +150,49 @@ alias gca='git commit -a'
 function gc { git commit -a --message="$*" ; }
 alias gd='git diff'
 alias gl='git log'
+
+# "private helper"
+function vbump() {
+
+  level=$1
+  echo "LEVEL $level"
+  semver inc $level
+  if [ $? -ne 0 ] ; then
+    echo 'semver script had a problem, exiting'
+    exit 1
+  fi
+
+  shift
+  message="${*:-bump}"
+  echo "MESSAGE $message"
+
+  echo "committing semver"
+  git commit -a -m"$message ($level)"
+  echo tagging
+  git tag -a $(semver tag) -m "$message"
+  echo showing tags
+  git tag -n9 | grep `git describe` # show annotated
+  echo pushing tags
+  git push
+  git push --tags
+  #git push --follow-tags
+
+}
+function vpatch() { vbump patch $* ; }
+function vminor() { vbump minor $* ; }
+function vmajor() { vbump major $* ; }
+
+# working on a general bump script
+function gitpatch {
+  message=$*
+  branch=`git name-rev --name-only HEAD`
+  git commit -a -m "$message"
+  git push
+  git checkout master
+  git merge --no-edit $branch
+  vpatch $message
+  git checkout $branch
+}
 
 ### OSX
 if [ "$(uname)" == "Darwin" ]; then
