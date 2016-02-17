@@ -169,6 +169,12 @@ else
   map <C-l> <C-w>l
 endif
 
+" restore cursor position
+" https://askubuntu.com/questions/223018/vim-is-not-remembering-last-position
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
 "let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
   "\ --ignore .git
   "\ --ignore .svn
