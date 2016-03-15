@@ -169,6 +169,9 @@ else
   map <C-l> <C-w>l
 endif
 
+ " Auto-save when switching to another tmux window \o/
+let g:tmux_navigator_save_on_switch = 1
+
 " restore cursor position
 " https://askubuntu.com/questions/223018/vim-is-not-remembering-last-position
 if has("autocmd")

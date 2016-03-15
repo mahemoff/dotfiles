@@ -1,6 +1,6 @@
 bind status P !git push origin
 bind status D !@?rm %(file)
-bind generic U !git add .
+bind generic U !git add -A
 bind generic R !git reset
 
 # Notes:

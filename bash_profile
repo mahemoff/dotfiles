@@ -119,7 +119,7 @@ function bunidev { bundle exec unicorn_rails -c config/unicorn_dev.rb ; }
 function buni { bundle exec unicorn_rails -c config/unicorn.rb  -p $1; }
 function sbuni { spring stop; bundle exec unicorn_rails -c config/unicorn.rb  -p $1; }
 alias buni3='buni 3000'
-alias sbuni3='spring stop; buni 3000'
+alias ssbuni3='spring stop; buni 3000'
 alias buni4='buni 4000'
 alias buni5='buni 5000'
 function ct { ctags -R --exclude=.git --exclude=log * ~/.rvm/gems/ruby-head/* ; }
