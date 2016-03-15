@@ -6,7 +6,7 @@
 [ -z "$PS1" ] && return
 
 # PATH
-export DOTFILES="$HOME/DOTFILES"
+export DOTFILES="$HOME/dotfiles"
 export PATH="$PATH:$HOME/bin:$DOTFILES/bin"
 
 ### LOCAL MACHINE - BEFORE
