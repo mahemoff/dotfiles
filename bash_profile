@@ -147,6 +147,8 @@ source $DOTFILES/bin/git-completion.bash
 alias gco='git co'
 __git_complete co _git_checkout
 alias gmerge='git merge'
+alias gmerged='git branch --merged'
+alias gnomerged='git branch --no-merged'
 __git_complete merge _git_merge
 GITS='add bisect branch checko clone commit diff fetch grep init log merge mv pull push rebase reset rm show status tag'
 for cmd in `cat $DOTFILES/.git-commands.txt` ; do
@@ -199,6 +201,24 @@ function gitpatch {
   git merge --no-edit $branch
   vpatch $message
   git checkout $branch
+}
+
+function gitdeploybump {
+  git mvbranch master stable-1
+  git mvbranch dev master
+  git co master
+  git co -b dev
+}
+
+function gitblastmerged {
+  for branch in `git branch --merged | grep 'active/'` ; do
+    target=`echo $branch | sed s/^active/old/g`
+    git mvbranch $branch $target
+  done
+}
+
+function gitpurge {
+  git branch --merged | grep 'old/' | xargs git blast
 }
 
 ### OSX
