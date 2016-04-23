@@ -3,5 +3,8 @@ bind status D !@?rm %(file)
 bind generic U !git add -A
 bind generic R !git reset
 
+# http://stackoverflow.com/a/25975171
+bind diff 7 !git diff %(commit)^ %(commit)
+
 # Notes:
 # ! to revert (rebase) a file
