@@ -1,3 +1,5 @@
 #!/bin/bash
-git branch -d $1
-git push origin --delete $1
+for branch in "$@" ; do
+  git branch -d $branch
+  git push origin --delete $branch
+done
