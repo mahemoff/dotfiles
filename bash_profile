@@ -69,6 +69,9 @@ function swp { mv -v `find . -name '*.sw?'` /tmp ; }
 function perf {
   curl -o /dev/null  -s -w "%{time_connect} + %{time_starttransfer} = %{time_total}\n" "$1"
 }
+function callinfo {
+  curl -I -s -w "%{time_connect} + %{time_starttransfer} = %{time_total}\n" "$1"
+}
 function ng { echo -e \\033c ; } # No Garbage (or use ctrl-o)
 function yoink { wget -c -t 0 --timeout=60 --waitretry=60 $1 ; } # auto-resume
 function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; }

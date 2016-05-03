@@ -1,0 +1,7 @@
+#!/bin/bash
+current_branch=`git status --branch --porcelain | grep '##' | cut -c 4-`
+stash_branch=`git branch | grep "$current_branch-[0-9]" | tail -1`
+if [ "$stash_branch" != "" ] ; then
+  echo "Merging $stash_branch into $current_branch"
+  git merge --no-commit --no-ff $stash_branch
+fi
