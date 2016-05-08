@@ -78,6 +78,7 @@ function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; 
 
 ### OPS
 alias ans='ansible'
+alias ap='ansible-playbook'
 function ansplay { date ; ansible-playbook "$@" ; date ; }
 
 # PYTHON
