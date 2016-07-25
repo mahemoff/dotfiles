@@ -163,6 +163,10 @@ alias gca='git commit -a'
 function gc { git commit -a --message="$*" ; }
 alias gd='git diff'
 alias gl='git log'
+alias gnomerge='git merge --no-commit --no-ff'
+
+# POCKYT
+alias pocketadd='pockyt put -i'
 
 # "private helper"
 function vbump() {
