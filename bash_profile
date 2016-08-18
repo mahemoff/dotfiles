@@ -43,10 +43,44 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 ### ALIASES
+
+function hash {
+  hasher=$(which md5sum)
+  if [ -x "$hasher" ] ; then
+    hashResult=`md5sum $1 |cut -f 1 -d " "`
+  else # try osx
+    hashResult=`md5 -q $1`
+  fi
+}
+
+# edit and save
+function bp {
+
+  file=$HOME/.bash_profile
+  hash $file
+  oldhash=$hashResult
+
+  vi $file
+  editStatus=$?
+  hash $file
+  newhash=$hashResult
+
+  if [ $editStatus -ne 0 ] ; then
+    echo "Quit editor, ignoring changes"
+  elif [ "$newhash" == "$oldhash" ] ; then
+    echo "No change"
+  else
+    echo "Applying bash profile"
+    source $file
+  fi
+
+}
+
+alias bpp='vi $HOME/.bash_profile'
+alias sbp='source $HOME/.bash_profile'
+
 alias ..='cd ..'
-alias bp='vi $HOME/.bash_profile'
 alias ba='vi $HOME/.bash_after'
-alias sbp='. $HOME/.bash_profile'
 alias a='vi $HOME/.bash_profile'
 alias m=more
 alias md='mkdir'
@@ -165,7 +199,23 @@ alias gd='git diff'
 alias gl='git log'
 alias gnomerge='git merge --no-commit --no-ff'
 
-# POCKYT
+# WEB
+function webcheck {
+  path=$1
+  shift
+  hosts=$*
+  echo ''
+  echo $hosts
+  for host in $hosts ; do
+    (
+      url="$host$path"
+      out=$(http -h $url | head -1)
+      echo "$url: $out" & )
+  done
+  wait
+}
+
+# POCKET
 alias pocketadd='pockyt put -i'
 
 # "private helper"
@@ -229,13 +279,15 @@ function gitpurge {
   git branch --merged | grep 'old/' | xargs git blast
 }
 
+function gitlogcopy { git log -1 --pretty=%B | pbcopy ; }
+
 ### OSX
 if [ "$(uname)" == "Darwin" ]; then
   function iphonebackupdisable { defaults write com.apple.iTunes DeviceBackupsDisabled -bool true ; }
   function iphonebackupenable  { defaults write com.apple.iTunes DeviceBackupsDisabled -bool false ; }
   function startmysql { launchctl load ~/Library/LaunchAgents/com.mysql.mysqld.plist; }
   function stopmysql { launchctl unload ~/Library/LaunchAgents/com.mysql.mysqld.plist; }
-  function flushdns { sudo killall -HUP mDNSResponder ; }
+  function flushdns { sudo killall -HUP mDNSResponder; }
 fi
 
 ### META - MANAGING THIS DOTFILE PROJECT
