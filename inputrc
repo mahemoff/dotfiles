@@ -2,7 +2,7 @@ set editing-mode vi
 set keymap vi-command
 set show-all-if-ambiguous on
 set completion-ignore-case on
-menu-complete-display-prefix on
+set menu-complete-display-prefix on
 "p": "i !!*\r"
 
 "\e\e[A": history-search-backward
