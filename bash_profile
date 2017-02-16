@@ -132,7 +132,8 @@ alias v.cd='cdvirtualenv'
 alias v.lssitepackages='lssitepackages'
 
 # RUBY/RAILS
-rake='bundle exec rake'
+alias bu=bundle
+alias rake='bundle exec rake'
 function blat { rake db:drop && rake db:create && rake db:migrate && rake db:schema:dump && rake db:fixtures:load && rake db:test:prepare; }
 function migrate { bundle exec rake db:migrate && bundle exec rake db:test:prepare; }
 alias bruby='bundle exec ruby'
@@ -141,7 +142,10 @@ alias brails='bundle exec rails'
 alias ssbrails='spring stop; bundle exec rails'
 alias ss='spring stop'
 alias srake='RAILS_ENV=test spring rake'
-alias trake='RAILS_ENV=test spring rake test'
+alias stest='RAILS_ENV=test spring rails test'
+alias sstest='spring stop; RAILS_ENV=test spring rails test'
+#alias trake='RAILS_ENV=test spring rake test'
+#alias trake='spring rails test' # can use -n /pattern/ too
 alias sstrake='spring stop; RAILS_ENV=test spring rake test'
 alias srails='spring rails'
 alias ssrails='spring stop; brails'
@@ -160,9 +164,9 @@ alias strails='spring stop; RAILS_ENV=test bundle exec rails'
 alias struby='spring stop; RAILS_ENV=test bundle exec ruby'
 alias assets='rake assets:precompile RAILS_ENV=production'
 #function buni { bundle exec unicorn_rails -p $1; }
-function bunidev { bundle exec unicorn_rails -c config/unicorn_dev.rb ; }
-function buni { bundle exec unicorn_rails -c config/unicorn.rb  -p $1; }
-function sbuni { spring stop; bundle exec unicorn_rails -c config/unicorn.rb  -p $1; }
+function bunidev { bundle exec unicorn -c config/unicorn_dev.rb ; }
+function buni { bundle exec unicorn -c config/unicorn.rb  -p $1; }
+function sbuni { spring stop; bundle exec unicorn -c config/unicorn.rb  -p $1; }
 alias buni3='buni 3000'
 alias ssbuni3='spring stop; buni 3000'
 alias buni4='buni 4000'
@@ -184,6 +188,7 @@ source $DOTFILES/projects/git-aware-prompt/main.sh
 source $DOTFILES/bin/git-completion.bash
 alias gco='git co'
 __git_complete co _git_checkout
+alias ghard='git reset --hard HEAD'
 alias gmerge='git merge'
 alias gmerged='git branch --merged'
 alias gnomerged='git branch --no-merged'
@@ -199,19 +204,41 @@ alias gd='git diff'
 alias gl='git log'
 alias gnomerge='git merge --no-commit --no-ff'
 
+
+trap_with_arg() { # from http://stackoverflow.com/a/2183063/804678
+  local func="$1"; shift
+  for sig in "$@"; do
+    trap "$func $sig" "$sig"
+  done
+}
+
+function handle_sigint() {
+  for proc in `jobs -p` ; do kill $proc ; done
+}
+
 # WEB
+# check same path on different hosts
+# e.g. webcheck /about google.com google.co.uk
 function webcheck {
+  trap handle_sigint SIGINT
+  set +m
   path=$1
   shift
   hosts=$*
-  echo ''
-  echo $hosts
   for host in $hosts ; do
     (
       url="$host$path"
-      out=$(http -h $url | head -1)
-      echo "$url: $out" & )
-  done
+      message="$url\n"
+      for i in {1..5}; do
+        start=`ruby -e 'puts Time.now.to_f'`
+        result=$(curl --silent -I $url | head -1)
+        end=`ruby -e 'puts Time.now.to_f'`
+        duration=$(bc <<< "$end-$start")
+        message="$message$i. $duration -> $result\n"
+      done
+      printf "$message\n"
+    ) &
+  done 2>/dev/null
   wait
 }
 
@@ -287,7 +314,7 @@ if [ "$(uname)" == "Darwin" ]; then
   function iphonebackupenable  { defaults write com.apple.iTunes DeviceBackupsDisabled -bool false ; }
   function startmysql { launchctl load ~/Library/LaunchAgents/com.mysql.mysqld.plist; }
   function stopmysql { launchctl unload ~/Library/LaunchAgents/com.mysql.mysqld.plist; }
-  function flushdns { sudo killall -HUP mDNSResponder; }
+  function flushdns { sudo dscacheutil -flushcache;sudo killall -HUP mDNSResponder; }
 fi
 
 ### META - MANAGING THIS DOTFILE PROJECT
@@ -351,4 +378,9 @@ if [[ "$(uname)" == "Darwin" && -n "$TMUX" ]] ; then
   tmux bind C-v run "reattach-to-user-namespace pbpaste | tmux load-buffer - && tmux paste-buffer"
 fi
 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+### TO CATEGORISE
+function gzxml {
+  gunzip -c $1 | xmllint --format -
+}
+
+#[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
