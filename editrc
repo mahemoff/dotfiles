@@ -1,0 +1,4 @@
+# https://stackoverflow.com/a/24206216/18706
+# good for mysql vim bindings and tab completion
+bind -v
+bind \\t rl_complete
