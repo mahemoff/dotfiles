@@ -53,7 +53,7 @@ function hash {
   fi
 }
 
-# edit and save
+# CONFIG
 function bp {
 
   file=$HOME/.bash_profile
@@ -78,37 +78,36 @@ function bp {
 
 alias bpp='vi $HOME/.bash_profile'
 alias sbp='source $HOME/.bash_profile'
-
-alias ..='cd ..'
 alias ba='vi $HOME/.bash_after'
 alias a='vi $HOME/.bash_profile'
+
+# MOVING BETWEEN DIRECTORIES
+alias ..='cd ..'
+alias pd='pushd'
+alias po='popd'
+
+# OUTPUTTING
 alias m=more
 alias md='mkdir'
 alias l=less
+alias ta='tail -fn0'
+alias ag='ag --silent'
+
+# LISTING FILES (LS)
 alias la='ls -AF'
 alias ll='ls -latr'
-alias h='history|tail -10'
-alias hi='history'
-alias vi=vim
-alias he=heroku
-alias cront="VIM_CRONTAB=true /usr/bin/crontab -e"
-alias ti='tig status'
-alias pd='pushd'
-alias po='popd'
-alias ag='ag --silent'
 alias lo='locate'
 function wh { locate $1 | grep "$1$" ; }
-function zipp { zip -r `basename $1`'.zip' $1 -x '*.git*'; }
-function swp { mv -v `find . -name '*.sw?'` /tmp ; }
-function perf {
-  curl -o /dev/null  -s -w "%{time_connect} + %{time_starttransfer} = %{time_total}\n" "$1"
-}
-function callinfo {
-  curl -I -s -w "%{time_connect} + %{time_starttransfer} = %{time_total}\n" "$1"
-}
-function ng { echo -e \\033c ; } # No Garbage (or use ctrl-o)
-function yoink { wget -c -t 0 --timeout=60 --waitretry=60 $1 ; } # auto-resume
-function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; }
+
+# BASH HISTORY
+alias h='history|tail -10'
+alias hi='history'
+function higrep { history | grep -i $1 | tail -5; }
+
+# RUNNING APPS
+alias vi=vim
+alias cront="VIM_CRONTAB=true /usr/bin/crontab -e"
+alias ti='tig status'
 
 ### OPS
 alias ans='ansible'
@@ -240,6 +239,10 @@ function webcheck {
     ) &
   done 2>/dev/null
   wait
+}
+
+function perf {
+  curl -o /dev/null  -s -w "%{time_connect} + %{time_starttransfer} = %{time_total}\n" "$1"
 }
 
 # POCKET
@@ -382,5 +385,14 @@ fi
 function gzxml {
   gunzip -c $1 | xmllint --format -
 }
+function zipp { zip -r `basename $1`'.zip' $1 -x '*.git*'; }
+function swp { mv -v `find . -name '*.sw?'` /tmp ; }
+function callinfo {
+  curl -I -s -w "%{time_connect} + %{time_starttransfer} = %{time_total}\n" "$1"
+}
+function ng { echo -e \\033c ; } # No Garbage (or use ctrl-o)
+function yoink { wget -c -t 0 --timeout=60 --waitretry=60 $1 ; } # auto-resume
+function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; }
+
 
 #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
