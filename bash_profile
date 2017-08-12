@@ -90,7 +90,7 @@ alias po='popd'
 alias m=more
 alias md='mkdir'
 alias l=less
-alias ta='tail -fn0'
+alias ta='tail -fqn0'
 alias ag='ag --silent'
 
 # LISTING FILES (LS)
