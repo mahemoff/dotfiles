@@ -180,6 +180,7 @@ alias tx=tmux
 alias tm=tmuxinator
 tma='tmux attach'
 function killtmux { tmux ls | awk '{print $1}' | sed 's/://g' | xargs -I{} tmux kill-session -t {} ; }
+function tmuxsurvivor { tmux detach -a ; } # kill other tmuxes, needed to expand to fit resized window
 
 # GIT
 export GITAWAREPROMPT=$DOTFILES/projects/git-aware-prompt
@@ -226,14 +227,18 @@ function webcheck {
   hosts=$*
   for host in $hosts ; do
     (
-      url="$host$path"
-      message="$url\n"
       for i in {1..5}; do
+
+        bust=$(cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+        url="$host$path?$bust"
+        message="$url\n"
+
         start=`ruby -e 'puts Time.now.to_f'`
         result=$(curl --silent -I $url | head -1)
         end=`ruby -e 'puts Time.now.to_f'`
         duration=$(bc <<< "$end-$start")
         message="$message$i. $duration -> $result\n"
+
       done
       printf "$message\n"
     ) &
