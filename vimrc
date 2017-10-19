@@ -38,6 +38,12 @@ map <Leader>= <c-w>o:set nonumber<cr>
 map <Leader>- <c-w>o:set number<cr>
 map <Leader>a :Ag<space>
 
+if has("mac")
+  set clipboard=unnamed
+elseif has("unix")
+  set clipboard=unnamedplus
+end
+
 au FileType crontab set nobackup nowritebackup
 
 " http://vim.wikia.com/wiki/Pretty-formatting_XML
