@@ -1,34 +1,56 @@
 # Mahemoff's bash profile
 # Some of this is taken from Linode default bashrc
 
+### HELPER FUNCTIONS
+
+parse_git_branch() {
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+### LOCAL MACHINE - BEFORE
+if [ -f $HOME/dotfiles/bash_before ] ; then
+  source $HOME/dotfiles/bash_before
+fi
+
 ### ENSURE WE'RE IN AN INTERACTIVE SHELL
 
 [ -z "$PS1" ] && return
 
+### CHECK ENVIRONMENT/OS
+OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+function myip { curl http://checkip.amazonaws.com; }
+
 # PATH
 export DOTFILES="$HOME/dotfiles"
-export PATH="$PATH:$HOME/bin:$DOTFILES/bin"
 
-### LOCAL MACHINE - BEFORE
-if [ -f $DOTFILES/bash_before ] ; then
-  source $DOTFILES/bash_before
-fi
+# Ruby path
+#export PATH="$HOME/.rubies/ruby-2.3.5/bin:$PATH:$HOME/bin:$DOTFILES/bin"
+export PATH="$HOME/.rubies/ruby-2.5.0/bin:$PATH:$HOME/bin:$DOTFILES/bin"
+
+# FZF with path
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # SHELL OPTIONS
 set -o vi
 shopt -s checkwinsize # Sync window size with shell
 #shopt -s globstar # Better globbing in file expansions
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)" # Binary less support
-if [ "$OSTYPE" == 'LINUX' ] ; then
-  #export PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w\$
-  export PS1="\${debian_chroot:+(\$debian_chroot)}\u@\h:\w \[$txtcyn\]\$git_branch\[$txtred\]\$git_dirty\[$txtrst\]\$ "
+
+#### PROMPT
+if [ "$OS" == 'linux' ] ; then
+  export PS1="\u@\h \[\033[32m\]\w\[\033[33m\]\$(parse_git_branch)\[\033[00m\] $ "
 else
   export PS1="\u@\h:\w \[$txtcyn\]\$git_branch\[$txtred\]\$git_dirty\[$txtrst\]\$ "
 fi
 
+#### OPEN FILES
+if [ "$OS" == 'linux' ] ; then
+  alias open='xdg-open'
+fi
+
 #### HISTORY
-export HISTCONTROL=ignoreboth # Avoid noisy hbistory
-shopt -s histappend # Append, don't overwrite, history
+export HISTCONTROL=ignoredups # Avoid noisy history
+shopt -s histappend # Append, don't overwrite, history, so all shells contribute it
 export HISTSIZE=1000
 export HISTFILESIZE=2000
 export EDITOR=vim
@@ -105,14 +127,24 @@ alias hi='history'
 function higrep { history | grep -i $1 | tail -5; }
 
 # RUNNING APPS
-alias vi=vim
+function vi { vim.gtk3 $* || vim $* ; }
 alias cront="VIM_CRONTAB=true /usr/bin/crontab -e"
 alias ti='tig status'
 
 ### OPS
 alias ans='ansible'
-alias ap='ansible-playbook'
+function ap {
+  inventory=$1
+  playbook=$2
+  ansible-playbook -i $inventory $playbook $*
+}
 function ansplay { date ; ansible-playbook "$@" ; date ; }
+
+### CLIPBOARD
+alias xc='xclip -selection c'
+
+### VIM
+alias vm="vi $HOME/.vimrc"
 
 # PYTHON
 alias server='python -m SimpleHTTPServer'
@@ -176,17 +208,19 @@ function rt { testable=$(echo 'test:'`echo $1 | sed 's/#/:/g'`) ; brake $testabl
 # TMUX
 function shell { tmux rename-window $1; ssh -o TCPKeepAlive=no -o ServerAliveInterval=15 $1; tmux rename-window 'bash'; }
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
+alias tmc="vi $HOME/.tmux.conf"
 alias tx=tmux
 alias tm=tmuxinator
 tma='tmux attach'
 function killtmux { tmux ls | awk '{print $1}' | sed 's/://g' | xargs -I{} tmux kill-session -t {} ; }
 function tmuxsurvivor { tmux detach -a ; } # kill other tmuxes, needed to expand to fit resized window
+# http://www.bendangelo.me/linux/2015/10/15/remap-caps-lock-in-ubuntu.html
 
 # GIT
-export GITAWAREPROMPT=$DOTFILES/projects/git-aware-prompt
-source $DOTFILES/projects/git-aware-prompt/main.sh
+#export GITAWAREPROMPT=$DOTFILES/projects/git-aware-prompt
+#source $DOTFILES/projects/git-aware-prompt/main.sh
 source $DOTFILES/bin/git-completion.bash
-alias gco='git co'
+alias gco='git checkout'
 __git_complete co _git_checkout
 alias ghard='git reset --hard HEAD'
 alias gmerge='git merge'
@@ -227,7 +261,9 @@ function webcheck {
   hosts=$*
   for host in $hosts ; do
     (
+      echo $host
       for i in {1..5}; do
+        echo $i
 
         bust=$(cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
         url="$host$path?$bust"
@@ -362,30 +398,6 @@ fi
   # fi
 # fi
 
-# Setup "inner" tmux settings, ie those inside a remote shell
-# Default tmux prefix uses c-b so we use c-a when we detect we're in a remote tmux window
-# This gets way better using Caps Lock for c-b and section key (§) for c-a ...
-# Ideally, should only run this once per server instance (maybe using tmux -c after launch??)
-#    maybe using if-shell 'test "$(uname)" = "Linux"' 'source ~/.tmux-linux.conf'
-# See: https://gist.github.com/mahemoff/5288473
-if [[ -n "$SSH_CLIENT" && -n "$TMUX" ]] ; then
-  tmux unbind c-b
-  tmux set -g prefix c-a > /dev/null
-  tmux bind c-a send-prefix
-  tmux set-window-option -g status-bg green > /dev/null
-  tmux set-window-option -g status-fg black > /dev/null
-  # https://gist.github.com/burke/5960455
-  tmux bind C-c run "tmux save-buffer - | pbcopy-remote"
-  tmux bind C-v run "tmux set-buffer $(pbpaste-remote); tmux paste-buffer"
-fi
-
-### OSX TMUX
-if [[ "$(uname)" == "Darwin" && -n "$TMUX" ]] ; then
-  tmux set-option -g default-command "reattach-to-user-namespace -l bash" > /dev/null
-  tmux bind C-c run "tmux save-buffer - | reattach-to-user-namespace pbcopy"
-  tmux bind C-v run "reattach-to-user-namespace pbpaste | tmux load-buffer - && tmux paste-buffer"
-fi
-
 ### TO CATEGORISE
 function gzxml {
   gunzip -c $1 | xmllint --format -
@@ -401,3 +413,25 @@ function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; 
 
 
 #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
+# Caps lock for tmux
+# https://unix.stackexchange.com/a/241659/36161
+#setxkbmap -layout us -option ctrl:nocaps
+#xmodmap -e 'clear Lock'
+#xmodmap -e 'keycode 0x7e = Control_R'
+#xmodmap -e 'add Control = Control_R'
+
+if [[ -n "$TMUX" ]] ; then
+  source $HOME/dotfiles/bash_tmux.sh
+fi
+
+function mon {
+  interval=$1 && shift
+  date
+  while [ 1 ] ; do
+    echo `date`" running $*"          
+    eval "$1"
+    echo `date`" waiting ${interval}s"
+    sleep $interval
+  done
+}
