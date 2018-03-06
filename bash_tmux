@@ -24,6 +24,7 @@ if [[ "$(uname)" == "Darwin" ]] ; then
   tmux bind C-c run "tmux save-buffer - | reattach-to-user-namespace pbcopy"
   tmux bind C-v run "reattach-to-user-namespace pbpaste | tmux load-buffer - && tmux paste-buffer"
 else
+  # map prefix to F12. Meanwhile, we should separately use xmodmap to map CAPS LOCK to F12
   tmux set-option -g prefix F12 # https://bbs.archlinux.org/viewtopic.php?id=198270
   tmux bind-key F12 last-window
 fi

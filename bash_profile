@@ -422,7 +422,7 @@ function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; 
 #xmodmap -e 'add Control = Control_R'
 
 if [[ -n "$TMUX" ]] ; then
-  source $HOME/dotfiles/bash_tmux.sh
+  source $HOME/dotfiles/bash_tmux
 fi
 
 function mon {
