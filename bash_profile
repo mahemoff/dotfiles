@@ -43,6 +43,10 @@ else
   export PS1="\u@\h:\w \[$txtcyn\]\$git_branch\[$txtred\]\$git_dirty\[$txtrst\]\$ "
 fi
 
+#### TERMINAL
+
+stty -ixon # disable antiquated freezing/resuming with ctrl-s/q
+
 #### OPEN FILES
 if [ "$OS" == 'linux' ] ; then
   alias open='xdg-open'
