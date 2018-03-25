@@ -22,6 +22,8 @@ fi
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 function myip { curl http://checkip.amazonaws.com; }
 function usage { top -b -n1 | egrep -i '(%cpu\(s\)|mem :|swap:)'; }
+function orlogs { tail -f /usr/local/openresty/nginx/logs/*.log ; }
+function syslogs { tail -f /var/log/messages/*.log ; }
 
 function mon {
   #if [ $? -lt 2 ] ; then
