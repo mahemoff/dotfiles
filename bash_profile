@@ -3,9 +3,11 @@
 
 ### HELPER FUNCTIONS
 
-parse_git_branch() {
+function parse_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
+#function quit() { echo "$*" 1>&2 ; exit 1; }
+function quit() { echo "$*" ; exit 1; }
 
 ### LOCAL MACHINE - BEFORE
 if [ -f $HOME/dotfiles/bash_before ] ; then
@@ -16,16 +18,31 @@ fi
 
 [ -z "$PS1" ] && return
 
-### CHECK ENVIRONMENT/OS
+### MONITORING AND ENV
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 function myip { curl http://checkip.amazonaws.com; }
+function usage { top -b -n1 | egrep -i '(%cpu\(s\)|mem :|swap:)'; }
+
+function mon {
+  #if [ $? -lt 2 ] ; then
+    #quit "mon interval cmd"
+  #fi
+  interval=$1 && shift
+  while [ 1 ] ; do
+    echo `date`" running $*"          
+    eval "$1"
+    echo `date`" waiting ${interval}s"
+    sleep $interval
+    echo '--'
+  done
+}
 
 # PATH
 export DOTFILES="$HOME/dotfiles"
 
 # Ruby path
 #export PATH="$HOME/.rubies/ruby-2.3.5/bin:$PATH:$HOME/bin:$DOTFILES/bin"
-export PATH="$HOME/.rubies/ruby-2.5.0/bin:$PATH:$HOME/bin:$DOTFILES/bin"
+export PATH="$HOME/.rubies/ruby-2.5.0/bin:$PATH:$HOME/bin:$DOTFILES/bin:~/.local/bin/"
 
 # FZF with path
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
@@ -208,6 +225,11 @@ alias buni4='buni 4000'
 alias buni5='buni 5000'
 function ct { ctags -R --exclude=.git --exclude=log * ~/.rvm/gems/ruby-head/* ; }
 function rt { testable=$(echo 'test:'`echo $1 | sed 's/#/:/g'`) ; brake $testable; }
+
+# GO
+export GOROOT=/usr/lib/go
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
 # TMUX
 function shell { tmux rename-window $1; ssh -o TCPKeepAlive=no -o ServerAliveInterval=15 $1; tmux rename-window 'bash'; }
@@ -429,13 +451,3 @@ if [[ -n "$TMUX" ]] ; then
   source $HOME/dotfiles/bash_tmux
 fi
 
-function mon {
-  interval=$1 && shift
-  date
-  while [ 1 ] ; do
-    echo `date`" running $*"          
-    eval "$1"
-    echo `date`" waiting ${interval}s"
-    sleep $interval
-  done
-}

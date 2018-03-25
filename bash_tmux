@@ -14,8 +14,6 @@ if [[ -n "$SSH_CLIENT" ]]; then
   # https://gist.github.com/burke/5960455
   tmux bind C-c run "tmux save-buffer - | pbcopy-remote"
   tmux bind C-v run "tmux set-buffer $(pbpaste-remote); tmux paste-buffer"
-else
-  tmux set -g mouse
 fi
 
 if [[ "$(uname)" == "Darwin" ]] ; then
