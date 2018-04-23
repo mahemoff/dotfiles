@@ -18,6 +18,13 @@ fi
 
 [ -z "$PS1" ] && return
 
+# SYSTEM
+# change timezone w/ menu
+function tz { sudo dpkg-reconfigure tzdata ; }
+# non-interactive
+#function tz { sudo timedatectl set-timezone $1 ; }
+function tzl { timedatectl list-timezones ; }
+
 ### MONITORING AND ENV
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 function myip { curl http://checkip.amazonaws.com; }
@@ -65,6 +72,7 @@ fi
 #### TERMINAL
 
 stty -ixon # disable antiquated freezing/resuming with ctrl-s/q
+alias CAPSOFF='xdotool key Caps_Lock' # fix weird caps on issue https://askubuntu.com/a/607915/40428
 
 #### OPEN FILES
 if [ "$OS" == 'linux' ] ; then
@@ -232,6 +240,8 @@ function rt { testable=$(echo 'test:'`echo $1 | sed 's/#/:/g'`) ; brake $testabl
 export GOROOT=/usr/lib/go
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+export PATH=$PATH:$HOME/.local/bin # python/pip/aws
+
 
 # TMUX
 function shell { tmux rename-window $1; ssh -o TCPKeepAlive=no -o ServerAliveInterval=15 $1; tmux rename-window 'bash'; }
@@ -277,6 +287,10 @@ trap_with_arg() { # from http://stackoverflow.com/a/2183063/804678
 function handle_sigint() {
   for proc in `jobs -p` ; do kill $proc ; done
 }
+
+# JOBS
+# ps search
+function pss { ps aux | grep $1 | grep -v grep ; }
 
 # WEB
 # check same path on different hosts
@@ -452,4 +466,3 @@ function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; 
 if [[ -n "$TMUX" ]] ; then
   source $HOME/dotfiles/bash_tmux
 fi
-
