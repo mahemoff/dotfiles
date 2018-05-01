@@ -27,6 +27,7 @@ function tzl { timedatectl list-timezones ; }
 
 ### MONITORING AND ENV
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+function taif { tail -f ; }
 function myip { curl http://checkip.amazonaws.com; }
 function usage { top -b -n1 | egrep -i '(%cpu\(s\)|mem :|swap:)'; }
 function orlogs { tail -f /usr/local/openresty/nginx/logs/*.log ; }
@@ -235,6 +236,7 @@ alias buni4='buni 4000'
 alias buni5='buni 5000'
 function ct { ctags -R --exclude=.git --exclude=log * ~/.rvm/gems/ruby-head/* ; }
 function rt { testable=$(echo 'test:'`echo $1 | sed 's/#/:/g'`) ; brake $testable; }
+function pumas { pkill -9 -f 'puma 3.1'; sudo service puma restart; ps aux | grep puma ; }
 
 # GO
 export GOROOT=/usr/lib/go
@@ -402,6 +404,14 @@ if [ "$(uname)" == "Darwin" ]; then
   function stopmysql { launchctl unload ~/Library/LaunchAgents/com.mysql.mysqld.plist; }
   function flushdns { sudo dscacheutil -flushcache;sudo killall -HUP mDNSResponder; }
 fi
+
+### MYSQL
+
+function mysql_rescue {
+  sudo mkdir -p /var/run/mysqld
+  sudo chown mysql:mysql /var/run/mysqld
+  sudo /usr/sbin/mysqld --skip-grant-tables --skip-networking   
+}
 
 ### META - MANAGING THIS DOTFILE PROJECT
 
