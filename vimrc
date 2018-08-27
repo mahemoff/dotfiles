@@ -26,6 +26,7 @@ set nostartofline
 set showcmd
 set secure
 set number
+set shortmess+=A " suppress warning
 
 nmap Q gq
 nmap <Leader>n <plug>NERDTreeTabsToggle<CR>
