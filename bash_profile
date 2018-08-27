@@ -54,8 +54,9 @@ export DOTFILES="$HOME/dotfiles"
 #export PATH="$HOME/.rubies/ruby-2.3.5/bin:$PATH:$HOME/bin:$DOTFILES/bin"
 export PATH="$HOME/.rubies/ruby-2.5.0/bin:$PATH:$HOME/bin:$DOTFILES/bin:~/.local/bin/"
 
-# FZF with path
+# FINDING AND LISTING FILES
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+function duh { (cd ${1:-.} ; du -sh * | sort -h ; echo '--'; du -sh .) }
 
 # SHELL OPTIONS
 set -o vi
@@ -73,7 +74,7 @@ fi
 #### TERMINAL
 
 stty -ixon # disable antiquated freezing/resuming with ctrl-s/q
-alias CAPSOFF='xdotool key Caps_Lock' # fix weird caps on issue https://askubuntu.com/a/607915/40428
+alias capsoff='xdotool key Caps_Lock' # fix weird caps on issue https://askubuntu.com/a/607915/40428
 
 #### OPEN FILES
 if [ "$OS" == 'linux' ] ; then
@@ -81,11 +82,21 @@ if [ "$OS" == 'linux' ] ; then
 fi
 
 #### HISTORY
-export HISTCONTROL=ignoredups # Avoid noisy history
-shopt -s histappend # Append, don't overwrite, history, so all shells contribute it
 export HISTSIZE=1000
 export HISTFILESIZE=2000
-export EDITOR=vim
+export HISTCONTROL=ignoredups # Avoid noisy history
+shopt -s histappend # Append, don't overwrite, history, so all shells contribute it
+_bash_history_sync() {
+  builtin history -a         #1
+  HISTFILESIZE=$HISTSIZE     #2
+  builtin history -c         #3
+  builtin history -r         #4
+}
+history() {                  #5
+  _bash_history_sync
+  builtin history "$@"
+}
+PROMPT_COMMAND=_bash_history_sync
 
 ### COLORIZE
 if [ -x /usr/bin/dircolors ]; then
@@ -134,6 +145,10 @@ alias bpp='vi $HOME/.bash_profile'
 alias sbp='source $HOME/.bash_profile'
 alias ba='vi $HOME/.bash_after'
 alias a='vi $HOME/.bash_profile'
+function dotfiles {
+  (cd ~/dotfiles ; git pull; ./make.sh)
+  sbp
+}
 
 # MOVING BETWEEN DIRECTORIES
 alias ..='cd ..'
@@ -176,6 +191,7 @@ function ansplay { date ; ansible-playbook "$@" ; date ; }
 alias xc='xclip -selection c'
 
 ### VIM
+export EDITOR=vim
 alias vm="vi $HOME/.vimrc"
 
 # PYTHON
@@ -256,11 +272,16 @@ function killtmux { tmux ls | awk '{print $1}' | sed 's/://g' | xargs -I{} tmux 
 function tmuxsurvivor { tmux detach -a ; } # kill other tmuxes, needed to expand to fit resized window
 # http://www.bendangelo.me/linux/2015/10/15/remap-caps-lock-in-ubuntu.html
 
+# SSH/MOSH
+# https://stackoverflow.com/a/39445896/18706
+function killmoshes { pgrep mosh-server | grep -v $(ps -o ppid --no-headers $$) | xargs kill ; }
+
 # GIT
 #export GITAWAREPROMPT=$DOTFILES/projects/git-aware-prompt
 #source $DOTFILES/projects/git-aware-prompt/main.sh
 source $DOTFILES/bin/git-completion.bash
 alias gco='git checkout'
+alias gbr='git branch'
 __git_complete co _git_checkout
 alias ghard='git reset --hard HEAD'
 alias gmerge='git merge'
@@ -364,6 +385,12 @@ function vpatch() { vbump patch $* ; }
 function vminor() { vbump minor $* ; }
 function vmajor() { vbump major $* ; }
 
+function gitmvbranch {
+	git branch -m $1 $2
+	git push origin :$1
+	git push --set-upstream origin $2
+}
+
 # working on a general bump script
 function gitpatch {
   message=$*
@@ -411,6 +438,20 @@ function mysql_rescue {
   sudo mkdir -p /var/run/mysqld
   sudo chown mysql:mysql /var/run/mysqld
   sudo /usr/sbin/mysqld --skip-grant-tables --skip-networking   
+}
+
+function mylong {
+  min_time=${1:-10}
+  display_width=${2:-160}
+  echo "set @width=$display_width; select ID, USER, HOST, DB, COMMAND, TIME, STATE, concat(substr(INFO,1,@width),IF(LENGTH(INFO) > @width, ' ...', '')) as QUERY from INFORMATION_SCHEMA.PROCESSLIST where time > $min_time AND command <> 'Sleep' ORDER by time;" | mysql
+}
+
+function mytaillong {
+  while [ 1 ]; do
+    echo "[MySQL long] $(date)"
+    mylong
+    sleep 30
+  done
 }
 
 ### META - MANAGING THIS DOTFILE PROJECT
@@ -476,3 +517,4 @@ function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; 
 if [[ -n "$TMUX" ]] ; then
   source $HOME/dotfiles/bash_tmux
 fi
+
