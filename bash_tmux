@@ -17,12 +17,16 @@ if [[ -n "$SSH_CLIENT" ]]; then
 fi
 
 if [[ "$(uname)" == "Darwin" ]] ; then
-  xmodmap -e "keycode 66 = F12" -e 'clear Lock'
   tmux set-option -g default-command "reattach-to-user-namespace -l bash" > /dev/null
   tmux bind C-c run "tmux save-buffer - | reattach-to-user-namespace pbcopy"
   tmux bind C-v run "reattach-to-user-namespace pbpaste | tmux load-buffer - && tmux paste-buffer"
 else
   # map prefix to F12. Meanwhile, we should separately use xmodmap to map CAPS LOCK to F12
+  xmodmap -e "keycode 66 = F12" -e 'clear Lock'
   tmux set-option -g prefix F12 # https://bbs.archlinux.org/viewtopic.php?id=198270
   tmux bind-key F12 last-window
 fi
+
+# https://superuser.com/questions/325110/how-to-turn-down-the-timeout-between-prefix-key-and-command-key-in-tmux 
+# allow prefix (ie CAPS LOCK and command key at same time or in short succession)
+tmux set-option -g repeat-time 0
