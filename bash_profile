@@ -443,15 +443,36 @@ function mysql_rescue {
 function mylong {
   min_time=${1:-10}
   display_width=${2:-160}
-  echo "set @width=$display_width; select ID, USER, HOST, DB, COMMAND, TIME, STATE, concat(substr(INFO,1,@width),IF(LENGTH(INFO) > @width, ' ...', '')) as QUERY from INFORMATION_SCHEMA.PROCESSLIST where time > $min_time AND command <> 'Sleep' ORDER by time;" | mysql
+  filter=${3:-'$'} 
+  echo "set @width=$display_width; select ID, USER, HOST, DB, COMMAND, TIME, STATE, concat(substr(INFO,1,@width),IF(LENGTH(INFO) > @width, ' ...', '')) as QUERY from INFORMATION_SCHEMA.PROCESSLIST where time > $min_time AND command <> 'Sleez' ORDER by time;" | mysql | grep $filter
 }
 
 function mytaillong {
   while [ 1 ]; do
+    echo ''
     echo "[MySQL long] $(date)"
     mylong
     sleep 30
   done
+}
+
+function mykill { if [ "$1" != "" ] ; then (echo "kill $1" | mysql); fi }
+
+# example: mykillpids 'clean up deletions' 123 456 789
+function mykillpids {
+  for mpid in $* ; do
+    echo "$(date) Killing mysql pid $mpid"
+    mykill $mpid
+  done
+}
+
+function mykillall {
+  min_time=$1
+  shift
+  pids=$(mylong $min_time | egrep "$*" | awk '{ print $1; }')
+  if [ "$pids" != "" ] ; then
+    mykillpids $pids
+  fi
 }
 
 ### META - MANAGING THIS DOTFILE PROJECT
