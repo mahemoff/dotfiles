@@ -11,7 +11,7 @@ cd `dirname $0`
 
 dir=~/dotfiles                    # dotfiles directory
 backupdir=~/backup/dotfiles          # old dotfiles backup directory
-files="bash_profile vimrc tmux.conf vim inputrc editrc bash_before bash_after bash_tmux tigrc irbrc"    # list of files to symlink in homedir
+files="bash_profile vimrc tmux.conf vim inputrc editrc bash_before bash_after bash_tmux myclirc tigrc irbrc"    # list of (dot)files to symlink in homedir
 
 ##########
 
