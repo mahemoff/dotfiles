@@ -444,7 +444,7 @@ function mylong {
   min_time=${1:-10}
   display_width=${2:-160}
   filter=${3:-'$'} 
-  echo "set @width=$display_width; select ID, USER, HOST, DB, COMMAND, TIME, STATE, concat(substr(INFO,1,@width),IF(LENGTH(INFO) > @width, ' ...', '')) as QUERY from INFORMATION_SCHEMA.PROCESSLIST where time > $min_time AND command <> 'Sleez' ORDER by time;" | mysql | grep $filter
+  echo "set @width=$display_width; select ID, USER, HOST, DB, COMMAND, TIME, STATE, concat(substr(INFO,1,@width),IF(LENGTH(INFO) > @width, ' ...', '')) as QUERY from INFORMATION_SCHEMA.PROCESSLIST where time > $min_time AND command <> 'Sleep' ORDER by time;" | mysql | grep $filter
 }
 
 function mytaillong {
