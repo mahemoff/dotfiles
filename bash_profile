@@ -222,6 +222,7 @@ alias ssbrails='spring stop; bundle exec rails'
 alias ss='spring stop'
 alias srake='RAILS_ENV=test spring rake'
 alias stest='RAILS_ENV=test spring rails test'
+function pest { processes=${1:-8}; echo "$processes procs"; RAILS_ENV=test PARALLEL_TEST_FIRST_IS_1=true brake "parallel:test[$processes]" ; }
 alias sstest='spring stop; RAILS_ENV=test spring rails test'
 #alias trake='RAILS_ENV=test spring rake test'
 #alias trake='spring rails test' # can use -n /pattern/ too
@@ -267,7 +268,7 @@ function shell { tmux rename-window $1; ssh -o TCPKeepAlive=no -o ServerAliveInt
 alias tmc="vi $HOME/.tmux.conf"
 alias tx=tmux
 alias tm=tmuxinator
-tma='tmux attach'
+alias tma='tmux attach'
 function killtmux { tmux ls | awk '{print $1}' | sed 's/://g' | xargs -I{} tmux kill-session -t {} ; }
 function tmuxsurvivor { tmux detach -a ; } # kill other tmuxes, needed to expand to fit resized window
 # http://www.bendangelo.me/linux/2015/10/15/remap-caps-lock-in-ubuntu.html
