@@ -30,3 +30,6 @@ fi
 # https://superuser.com/questions/325110/how-to-turn-down-the-timeout-between-prefix-key-and-command-key-in-tmux 
 # allow prefix (ie CAPS LOCK and command key at same time or in short succession)
 tmux set-option -g repeat-time 0
+
+# always use the default ctrl-b as a backup
+tmux set-option -g prefix2 C-b

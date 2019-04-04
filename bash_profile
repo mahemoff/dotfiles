@@ -16,7 +16,7 @@ fi
 
 ### ENSURE WE'RE IN AN INTERACTIVE SHELL
 
-[ -z "$PS1" ] && return
+#[ -z "$PS1" ] && return
 
 # SYSTEM
 # change timezone w/ menu
@@ -27,7 +27,8 @@ function tzl { timedatectl list-timezones ; }
 
 ### MONITORING AND ENV
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
-function taif { tail -f ; }
+function taif { tail -f ; } # tail live file
+function taifg { tail -f | sed G; } # tail live file with empty line after each line
 function myip { curl http://checkip.amazonaws.com; }
 function usage { top -b -n1 | egrep -i '(%cpu\(s\)|mem :|swap:)'; }
 function orlogs { tail -f /usr/local/openresty/nginx/logs/*.log ; }
@@ -86,17 +87,17 @@ export HISTSIZE=1000
 export HISTFILESIZE=2000
 export HISTCONTROL=ignoredups # Avoid noisy history
 shopt -s histappend # Append, don't overwrite, history, so all shells contribute it
-_bash_history_sync() {
-  builtin history -a         #1
-  HISTFILESIZE=$HISTSIZE     #2
-  builtin history -c         #3
-  builtin history -r         #4
-}
-history() {                  #5
-  _bash_history_sync
-  builtin history "$@"
-}
-PROMPT_COMMAND=_bash_history_sync
+#_bash_history_sync() {
+  #builtin history -a         #1
+  #HISTFILESIZE=$HISTSIZE     #2
+  #builtin history -c         #3
+  #builtin history -r         #4
+#}
+#history() {                  #5
+  #_bash_history_sync
+  #builtin history "$@"
+#}
+#PROMPT_COMMAND=_bash_history_sync
 
 ### COLORIZE
 if [ -x /usr/bin/dircolors ]; then
@@ -143,6 +144,7 @@ function bp {
 
 alias bpp='vi $HOME/.bash_profile'
 alias sbp='source $HOME/.bash_profile'
+alias SBP='source $HOME/.bash_profile' # support if caps lock stuck
 alias ba='vi $HOME/.bash_after'
 alias a='vi $HOME/.bash_profile'
 function dotfiles {
@@ -161,6 +163,8 @@ alias md='mkdir'
 alias l=less
 alias ta='tail -fqn0'
 alias ag='ag --silent'
+export BAT_THEME='GitHub' # for bat, alternative to cat
+function lmd { pandoc doc/design/design.md | lynx -stdin ; }
 
 # LISTING FILES (LS)
 alias la='ls -AF'
@@ -171,10 +175,13 @@ function wh { locate $1 | grep "$1$" ; }
 # BASH HISTORY
 alias h='history|tail -10'
 alias hi='history'
+function histgrep { history | grep -i $1 ; }
 function higrep { history | grep -i $1 | tail -5; }
 
 # RUNNING APPS
-function vi { vim.gtk3 $* || vim $* ; }
+#function vi { (vim.gtk3 $* > /dev/null) || vim $* ; }
+#function vi { vim $* ; } 
+alias vi=vim
 alias cront="VIM_CRONTAB=true /usr/bin/crontab -e"
 alias ti='tig status'
 
@@ -228,6 +235,10 @@ alias sstest='spring stop; RAILS_ENV=test spring rails test'
 #alias trake='spring rails test' # can use -n /pattern/ too
 alias sstrake='spring stop; RAILS_ENV=test spring rake test'
 alias srails='spring rails'
+alias rgmigration='spring rails g migration'
+alias rmigrate='spring rake db:migrate'
+alias rrollback='spring rake db:rollback'
+alias rredo='spring rake db:migrate:rollback'
 alias ssrails='spring stop; brails'
 alias ssrake='spring stop; brake'
 #alias sbrails='spring stop; bundle exec rails'
@@ -433,6 +444,20 @@ if [ "$(uname)" == "Darwin" ]; then
   function flushdns { sudo dscacheutil -flushcache;sudo killall -HUP mDNSResponder; }
 fi
 
+### DOCKER
+alias startdocker='sudo snap start docker' # https://askubuntu.com/a/978012/40428
+alias dc='docker-compose'
+function dcup { dc up $*; }
+function dcdown { dc down $*; }
+function dcstart { dc start $*; }
+function dcstop { dc stop $*; }
+function dcrestart { dc restart $*; }
+function dcps { dc ps $*; }
+function dcr { dc restart $*; }
+function dcreset { dc rm -vf; dc up; }
+function dcblast { docker stop $(docker ps -a -q); docker rm $(docker ps -a -q); docker rmi $(docker images -q); docker ps ; docker images; }
+function dclogs { docker-compose logs -t -f --tail=all; }
+
 ### MYSQL
 
 function mysql_rescue {
@@ -526,6 +551,9 @@ function ng { echo -e \\033c ; } # No Garbage (or use ctrl-o)
 function yoink { wget -c -t 0 --timeout=60 --waitretry=60 $1 ; } # auto-resume
 function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; }
 
+# toggle caps on/off - can be stuck on due to tmux config
+function caps { xdotool key Caps_Lock; }
+function CAPS { xdotool key Caps_Lock; }
 
 #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
