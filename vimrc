@@ -7,9 +7,9 @@ filetype plugin indent on
 let mapleader = ","
 syntax on
 
+" set mouse=a (breaks tmux clipboard)
 set nocompatible
 set wrap
-set mouse=a
 set ttym=xterm2
 set ignorecase
 set ruler

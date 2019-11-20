@@ -34,3 +34,8 @@ tmux set-option -g repeat-time 0
 
 # always use the default ctrl-b as a backup
 tmux set-option -g prefix2 C-b
+
+# simply way to revert to window's original layout
+# https://stackoverflow.com/questions/22566373/tmux-how-to-restore-layout-after-changing-it-with-select-layout-or-next-layout
+export START_LAYOUT=$( tmux display-message -p "#{window_layout}" ; )
+function trestore { tmux select-layout "$START_LAYOUT" ; }
