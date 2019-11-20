@@ -33,6 +33,8 @@ function myip { curl http://checkip.amazonaws.com; }
 function usage { top -b -n1 | egrep -i '(%cpu\(s\)|mem :|swap:)'; }
 function orlogs { tail -f /usr/local/openresty/nginx/logs/*.log ; }
 function syslogs { tail -f /var/log/messages/*.log ; }
+# https://stackoverflow.com/a/57325221/18706
+alias cleanstrings="sed $'s#\e[\[(][[:digit:]]*[[:print:]]##g'|strings"
 
 function mon {
   #if [ $? -lt 2 ] ; then
@@ -53,7 +55,7 @@ export DOTFILES="$HOME/dotfiles"
 
 # Ruby path
 #export PATH="$HOME/.rubies/ruby-2.3.5/bin:$PATH:$HOME/bin:$DOTFILES/bin"
-export PATH="$HOME/.rubies/ruby-2.5.0/bin:$PATH:$HOME/bin:$DOTFILES/bin:~/.local/bin/"
+#export PATH="$HOME/.rubies/ruby-2.6.5/bin:$PATH:$HOME/bin:$DOTFILES/bin:~/.local/bin/"
 
 # FINDING AND LISTING FILES
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
@@ -98,6 +100,9 @@ shopt -s histappend # Append, don't overwrite, history, so all shells contribute
   #builtin history "$@"
 #}
 #PROMPT_COMMAND=_bash_history_sync
+
+### HELP/DOCS
+function tl { tldr $* | more ; }
 
 ### COLORIZE
 if [ -x /usr/bin/dircolors ]; then
@@ -144,7 +149,10 @@ function bp {
 
 alias bpp='vi $HOME/.bash_profile'
 alias sbp='source $HOME/.bash_profile'
-alias SBP='source $HOME/.bash_profile' # support if caps lock stuck
+alias SBP=sbp
+alias rbp='nocaps; source $HOME/.bash_profile' # "reset" mode to force nocaps
+alias RBP=rbp
+function bpg { ag $@ $HOME/.bash_profile; }
 alias ba='vi $HOME/.bash_after'
 alias a='vi $HOME/.bash_profile'
 function dotfiles {
@@ -169,8 +177,13 @@ function lmd { pandoc doc/design/design.md | lynx -stdin ; }
 # LISTING FILES (LS)
 alias la='ls -AF'
 alias ll='ls -latr'
+alias lsr='ls -laSr' # sort by file size
 alias lo='locate'
 function wh { locate $1 | grep "$1$" ; }
+
+# MOUNTING
+alias mo='mount'
+alias um='unmount'
 
 # BASH HISTORY
 alias h='history|tail -10'
@@ -181,7 +194,15 @@ function higrep { history | grep -i $1 | tail -5; }
 # RUNNING APPS
 #function vi { (vim.gtk3 $* > /dev/null) || vim $* ; }
 #function vi { vim $* ; } 
-alias vi=vim
+#alias vi=vim
+
+# vim with support for line number specified by colon
+VIM=$(which vim)
+function vi {
+	local args
+	IFS=':' read -a args <<< "$1"
+	"$VIM" "${args[0]}" +0"${args[1]}"
+}
 alias cront="VIM_CRONTAB=true /usr/bin/crontab -e"
 alias ti='tig status'
 
@@ -224,6 +245,7 @@ function blat { rake db:drop && rake db:create && rake db:migrate && rake db:sch
 function migrate { bundle exec rake db:migrate && bundle exec rake db:test:prepare; }
 alias bruby='bundle exec ruby'
 alias brake='bundle exec rake'
+alias brass='brake assets:precompile'
 alias brails='bundle exec rails'
 alias ssbrails='spring stop; bundle exec rails'
 alias ss='spring stop'
@@ -277,6 +299,8 @@ export PATH=$PATH:$HOME/.local/bin # python/pip/aws
 function shell { tmux rename-window $1; ssh -o TCPKeepAlive=no -o ServerAliveInterval=15 $1; tmux rename-window 'bash'; }
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
 alias tmc="vi $HOME/.tmux.conf"
+alias stmc="tmux source-file ~/.tmux.conf"
+
 alias tx=tmux
 alias tm=tmuxinator
 alias tma='tmux attach'
@@ -291,26 +315,32 @@ function killmoshes { pgrep mosh-server | grep -v $(ps -o ppid --no-headers $$) 
 # GIT
 #export GITAWAREPROMPT=$DOTFILES/projects/git-aware-prompt
 #source $DOTFILES/projects/git-aware-prompt/main.sh
-source $DOTFILES/bin/git-completion.bash
+if [ -f "$DOTFILES/.git-completion.txt" ] ; then
+  source $DOTFILES/bin/git-completion.bash
+  #__git_complete co _git_checkout
+  #__git_complete merge _git_merge
+fi
 alias gco='git checkout'
+alias gcopr='hub pr checkout'
 alias gbr='git branch'
-__git_complete co _git_checkout
+alias gchanged='git diff --name-only HEAD'
 alias ghard='git reset --hard HEAD'
 alias gmerge='git merge'
 alias gmerged='git branch --merged'
 alias gnomerged='git branch --no-merged'
-__git_complete merge _git_merge
 GITS='add bisect branch checko clone commit diff fetch grep init log merge mv pull push rebase reset rm show status tag'
-for cmd in `cat $DOTFILES/.git-commands.txt` ; do
-  alias "g$cmd"="git $cmd"
-  __git_complete $cmd _git_$cmd
-done
+if [ -f "$DOTFILES/.git-commands.txt" ] ; then
+  for cmd in `cat $DOTFILES/.git-commands.txt` ; do
+    alias "g$cmd"="git $cmd"
+    #__git_complete $cmd _git_$cmd
+  done
+fi
 alias gca='git commit -a'
 function gc { git commit -a --message="$*" ; }
 alias gd='git diff'
+alias gdm='git diff master...'
 alias gl='git log'
 alias gnomerge='git merge --no-commit --no-ff'
-
 
 trap_with_arg() { # from http://stackoverflow.com/a/2183063/804678
   local func="$1"; shift
@@ -435,15 +465,6 @@ function gitpurge {
 
 function gitlogcopy { git log -1 --pretty=%B | pbcopy ; }
 
-### OSX
-if [ "$(uname)" == "Darwin" ]; then
-  function iphonebackupdisable { defaults write com.apple.iTunes DeviceBackupsDisabled -bool true ; }
-  function iphonebackupenable  { defaults write com.apple.iTunes DeviceBackupsDisabled -bool false ; }
-  function startmysql { launchctl load ~/Library/LaunchAgents/com.mysql.mysqld.plist; }
-  function stopmysql { launchctl unload ~/Library/LaunchAgents/com.mysql.mysqld.plist; }
-  function flushdns { sudo dscacheutil -flushcache;sudo killall -HUP mDNSResponder; }
-fi
-
 ### DOCKER
 alias startdocker='sudo snap start docker' # https://askubuntu.com/a/978012/40428
 alias dc='docker-compose'
@@ -451,12 +472,19 @@ function dcup { dc up $*; }
 function dcdown { dc down $*; }
 function dcstart { dc start $*; }
 function dcstop { dc stop $*; }
+function dcb { dc build $*; }
+function dcbn { dc build --no-cache $*; }
 function dcrestart { dc restart $*; }
 function dcps { dc ps $*; }
-function dcr { dc restart $*; }
+function dcup { dc up $*; }
+function dcr { dc run $*; }
+function dcre { dc restart $*; }
 function dcreset { dc rm -vf; dc up; }
-function dcblast { docker stop $(docker ps -a -q); docker rm $(docker ps -a -q); docker rmi $(docker images -q); docker ps ; docker images; }
+function dcblast { docker stop $(docker ps -a -q); docker rm $(docker ps -a -q); docker rmi $(docker images -q) --force; docker ps ; docker images; }
+
 function dclogs { docker-compose logs -t -f --tail=all; }
+function dcresetlogs { sudo sh -c "truncate -s 0 /var/lib/docker/containers/*/*-json.log"; }
+function dcl { dcresetlogs; dclogs ; }
 
 ### MYSQL
 
@@ -521,6 +549,11 @@ if [ -f $HOME/dotfiles/bash_after ] ; then
   source $HOME/dotfiles/bash_after
 fi
 
+### DNS
+
+function flushdns { sudo /etc/init.d/nscd restart; }
+alias ns='nslookup'
+
 # FINALLY, ENSURE TMUX SESSION FOR REMOTE SHELLS
 # if [[ -n "$SSH_CLIENT" && -z "$TMUX" ]] ; then
   # tmux has-session &> /dev/null
@@ -553,7 +586,13 @@ function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; 
 
 # toggle caps on/off - can be stuck on due to tmux config
 function caps { xdotool key Caps_Lock; }
-function CAPS { xdotool key Caps_Lock; }
+alias CAPS=caps
+# force off no matter current state
+function nocaps {
+  state=$(xset q | grep 'Caps Lock'|awk '{print $4}')
+  if [ "$state" != "off" ] ; then caps ; fi
+}
+alias NOCAPS=nocaps
 
 #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
@@ -564,7 +603,17 @@ function CAPS { xdotool key Caps_Lock; }
 #xmodmap -e 'keycode 0x7e = Control_R'
 #xmodmap -e 'add Control = Control_R'
 
+### OSX
+if [ "$(uname)" == "Darwin" ]; then
+  function iphonebackupdisable { defaults write com.apple.iTunes DeviceBackupsDisabled -bool true ; }
+  function iphonebackupenable  { defaults write com.apple.iTunes DeviceBackupsDisabled -bool false ; }
+  function startmysql { launchctl load ~/Library/LaunchAgents/com.mysql.mysqld.plist; }
+  function stopmysql { launchctl unload ~/Library/LaunchAgents/com.mysql.mysqld.plist; }
+  function flushdns { sudo dscacheutil -flushcache;sudo killall -HUP mDNSResponder; }
+fi
+
 if [[ -n "$TMUX" ]] ; then
   source $HOME/dotfiles/bash_tmux
 fi
 
+export PATH=$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb
