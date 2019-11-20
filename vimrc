@@ -191,3 +191,6 @@ endif
   "\ --ignore .hg
   "\ --ignore .DS_Store
   "\ --ignore "**/*.pyc"'
+
+" GIT (and fugitive)
+nnoremap vg :vertical Gstatus<cr>
