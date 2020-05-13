@@ -33,6 +33,16 @@ function myip { curl http://checkip.amazonaws.com; }
 function usage { top -b -n1 | egrep -i '(%cpu\(s\)|mem :|swap:)'; }
 function orlogs { tail -f /usr/local/openresty/nginx/logs/*.log ; }
 function syslogs { tail -f /var/log/messages/*.log ; }
+# measure rate a file (such as logfile) is growing
+function filespeed { 
+  file=$1
+  delay=${2:-5}
+  start=$(wc -l log/production.log | cut -d' ' -f1)
+  sleep $delay
+  stop=$(wc -l log/production.log |cut -d' ' -f1)
+  rate=$(( ($stop - $start) / $delay ))
+  echo "$rate lines/s"
+}
 # https://stackoverflow.com/a/57325221/18706
 alias cleanstrings="sed $'s#\e[\[(][[:digit:]]*[[:print:]]##g'|strings"
 
@@ -56,6 +66,9 @@ export DOTFILES="$HOME/dotfiles"
 # Ruby path
 #export PATH="$HOME/.rubies/ruby-2.3.5/bin:$PATH:$HOME/bin:$DOTFILES/bin"
 #export PATH="$HOME/.rubies/ruby-2.6.5/bin:$PATH:$HOME/bin:$DOTFILES/bin:~/.local/bin/"
+
+# Java/Gradle
+export GRADLE_HOME=/opt/gradle/gradle-5.0
 
 # FINDING AND LISTING FILES
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
@@ -243,6 +256,7 @@ alias bu=bundle
 alias rake='bundle exec rake'
 function blat { rake db:drop && rake db:create && rake db:migrate && rake db:schema:dump && rake db:fixtures:load && rake db:test:prepare; }
 function migrate { bundle exec rake db:migrate && bundle exec rake db:test:prepare; }
+alias be='bundle exec'
 alias bruby='bundle exec ruby'
 alias brake='bundle exec rake'
 alias brass='brake assets:precompile'
@@ -584,6 +598,9 @@ function ng { echo -e \\033c ; } # No Garbage (or use ctrl-o)
 function yoink { wget -c -t 0 --timeout=60 --waitretry=60 $1 ; } # auto-resume
 function recursive_sed { git grep -lz $1 | xargs -0 perl -i'' -pE "s/$1/$2/g" ; }
 
+# make native, e.g. nativefier https://tweetdeck.com
+function native { nativefier -p linux -a x64 "$1" --tray; }
+
 # toggle caps on/off - can be stuck on due to tmux config
 function caps { xdotool key Caps_Lock; }
 alias CAPS=caps
@@ -616,4 +633,5 @@ if [[ -n "$TMUX" ]] ; then
   source $HOME/dotfiles/bash_tmux
 fi
 
-export PATH=$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb
+export PATH=$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb:$GRADLE_HOME/bin
+

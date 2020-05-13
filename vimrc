@@ -192,5 +192,12 @@ endif
   "\ --ignore .DS_Store
   "\ --ignore "**/*.pyc"'
 
-" GIT (and fugitive)
+" GIT (and fugitive/gview/vim-gdiff)
 nnoremap vg :vertical Gstatus<cr>
+
+
+" https://github.com/oguzbilgic/vim-gdiff
+nnoremap ]r :%bd<CR>:cnext<CR>:vertical Gdiffsplit<CR>
+nnoremap [r :%bd<CR>:cprevious<CR>:vertical Gdiffsplit<CR>
+nnoremap ]R :%bd<CR>:clast<CR>:vertical Gdiffsplit<CR>
+nnoremap [R :%bd<CR>:cfirst<CR>:vertical Gdiffsplit<CR>
