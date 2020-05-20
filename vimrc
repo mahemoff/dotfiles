@@ -201,3 +201,6 @@ nnoremap ]r :%bd<CR>:cnext<CR>:vertical Gdiffsplit<CR>
 nnoremap [r :%bd<CR>:cprevious<CR>:vertical Gdiffsplit<CR>
 nnoremap ]R :%bd<CR>:clast<CR>:vertical Gdiffsplit<CR>
 nnoremap [R :%bd<CR>:cfirst<CR>:vertical Gdiffsplit<CR>
+
+" https://github.com/JamshedVesuna/vim-markdown-preview
+let vim_markdown_preview_github=1
