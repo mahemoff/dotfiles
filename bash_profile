@@ -1,4 +1,4 @@
-# Mahemoff's bash profile
+#"quick commit"  Mahemoff's bash profile
 # Some of this is taken from Linode default bashrc
 
 ### HELPER FUNCTIONS
@@ -63,6 +63,9 @@ function mon {
 # PATH
 export DOTFILES="$HOME/dotfiles"
 
+# FILES
+alias chx='chmod u+x'
+
 # Ruby path
 #export PATH="$HOME/.rubies/ruby-2.3.5/bin:$PATH:$HOME/bin:$DOTFILES/bin"
 #export PATH="$HOME/.rubies/ruby-2.6.5/bin:$PATH:$HOME/bin:$DOTFILES/bin:~/.local/bin/"
@@ -73,6 +76,7 @@ export GRADLE_HOME=/opt/gradle/gradle-5.0
 # FINDING AND LISTING FILES
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 function duh { (cd ${1:-.} ; du -sh * | sort -h ; echo '--'; du -sh .) }
+function dfh { df -h ${1:-.} ; }
 
 # SHELL OPTIONS
 set -o vi
@@ -234,10 +238,33 @@ alias xc='xclip -selection c'
 ### VIM
 export EDITOR=vim
 alias vm="vi $HOME/.vimrc"
+# https://stackoverflow.com/a/17986639/18706
+# vi new
+# e.g. vin foo/bar/baz makes new foo/bar folder and the file
+function vin { 
+  file=$1
+  echo $file
+  folder=$(sed 's/\(.*\)\/.*/\1/' <<< $file)
+  mkdir -p $folder
+  if [ "$2" == "chmodx" ]; then
+    echo chmoding
+    chmod u+x $file
+  fi
+  vi $file
+}
+
+function vinx { 
+  vin $1 chmodx
+}
 
 # PYTHON
-alias server='python -m SimpleHTTPServer'
+alias httpserver='python -m SimpleHTTPServer'
 export WORKON_HOME=$HOME/.virtualenvs
+alias py='python3.8'
+#alias pipinstall='py -m pip install -r requirements.txt'
+alias pipinstall='py -m pip install'
+alias pipfreeze='py -m pip freeze > requirements.txt'
+alias pipreq='py -m pip install -r requirements.txt'
 [ -f /usr/local/bin/virtualenvwrapper.sh ] && source /usr/local/bin/virtualenvwrapper.sh # see http://bit.ly/pyvirtualenv
 # http://blog.doughellmann.com/2010/01/virtualenvwrapper-tips-and-tricks.html
 alias v='workon'
@@ -302,6 +329,18 @@ function ct { ctags -R --exclude=.git --exclude=log * ~/.rvm/gems/ruby-head/* ; 
 function rt { testable=$(echo 'test:'`echo $1 | sed 's/#/:/g'`) ; brake $testable; }
 function pumas { pkill -9 -f 'puma 3.1'; sudo service puma restart; ps aux | grep puma ; }
 
+# NODE
+export N_PREFIX="$HOME/.n"
+
+# JEKYLL
+alias jek='bundle exec jekyll'
+alias jeks='jek serve'
+alias jeksi='jek serve --incremental'
+alias jeksnow='jek serve --skip-initial-build'
+
+# ELEVENTY
+alias elvs='npx @11ty/eleventy --serve --watch'
+
 # GO
 export GOROOT=/usr/lib/go
 export GOPATH=$HOME/go
@@ -355,6 +394,7 @@ alias gd='git diff'
 alias gdm='git diff master...'
 alias gl='git log'
 alias gnomerge='git merge --no-commit --no-ff'
+function gpall  { git add . ;  git commit -m "$*" ; git push; }
 
 trap_with_arg() { # from http://stackoverflow.com/a/2183063/804678
   local func="$1"; shift
@@ -370,6 +410,10 @@ function handle_sigint() {
 # JOBS
 # ps search
 function pss { ps aux | grep $1 | grep -v grep ; }
+
+# NETWORKING
+alias hos='sudo vi "+normal G" /etc/hosts'
+alias resolv='sudo vi /etc/resolv.conf'
 
 # WEB
 # check same path on different hosts
@@ -408,7 +452,7 @@ function perf {
 }
 
 # POCKET
-alias pocketadd='pockyt put -i'
+function pocketadd { pocket-cli add --url $1; }
 
 # "private helper"
 function vbump() {
@@ -493,6 +537,8 @@ function dcps { dc ps $*; }
 function dcup { dc up $*; }
 function dcr { dc run $*; }
 function dcre { dc restart $*; }
+function dcbash { dc exec --privileged $* bash; } # "ssh" into it
+function dchardup { dc kill; dc rm -f; dc up --force-recreate --build $*; }
 function dcreset { dc rm -vf; dc up; }
 function dcblast { docker stop $(docker ps -a -q); docker rm $(docker ps -a -q); docker rmi $(docker images -q) --force; docker ps ; docker images; }
 
@@ -585,6 +631,23 @@ alias ns='nslookup'
   # fi
 # fi
 
+### APT
+
+function aptfree {
+  sudo rm /var/lib/dpkg/lock /var/lib/dpkg/lock-frontend;
+}
+
+### PASSWORDS
+
+function hardpass {
+  message="$@"
+  length=$(( 28 + RANDOM % 16 ))
+  if [ "$message" != "" ]; then
+    echo "### $message"
+  fi
+  pwgen -1 -y -s $length
+}
+
 ### TO CATEGORISE
 function gzxml {
   gunzip -c $1 | xmllint --format -
@@ -633,5 +696,5 @@ if [[ -n "$TMUX" ]] ; then
   source $HOME/dotfiles/bash_tmux
 fi
 
-export PATH=$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb:$GRADLE_HOME/bin
-
+#export PATH=$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb:$GRADLE_HOME/bin:$HOME/.npm
+export PATH=$HOME/.n/bin:$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb:$GRADLE_HOME/bin
