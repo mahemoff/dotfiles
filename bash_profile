@@ -238,23 +238,39 @@ alias xc='xclip -selection c'
 ### VIM
 export EDITOR=vim
 alias vm="vi $HOME/.vimrc"
+
 # https://stackoverflow.com/a/17986639/18706
-# vi new
+# "vi new" alias to idempotently create and start editing the file at any path
 # e.g. vin foo/bar/baz makes new foo/bar folder and the file
-function vin { 
+function vin {
   file=$1
+  shift
   echo $file
   folder=$(sed 's/\(.*\)\/.*/\1/' <<< $file)
   mkdir -p $folder
-  if [ "$2" == "chmodx" ]; then
+  if [ "$1" == "chmodx" ]; then
+    shift
     echo chmoding
     chmod u+x $file
   fi
-  vi $file
+  vi $@ $file
 }
 
 function vinx { 
   vin $1 chmodx
+}
+
+# https://news.ycombinator.com/item?id=22293133
+function nb {
+  notes=$HOME/Dropbox/pers/notes.txt
+  if [ -f $notes ] ; then
+    echo >> $notes
+    date >> $notes
+    echo $@ >> $notes
+    vim "+normal Go" +startinsert $notes
+  else
+    echo "$notes not found"
+  fi
 }
 
 # PYTHON
@@ -331,6 +347,10 @@ function pumas { pkill -9 -f 'puma 3.1'; sudo service puma restart; ps aux | gre
 
 # NODE
 export N_PREFIX="$HOME/.n"
+alias nodex='node --experimental-modules'
+alias npi='npm install'
+alias npid='npm install --save-dev'
+alias npu='npm uninstall'
 
 # JEKYLL
 alias jek='bundle exec jekyll'
@@ -342,7 +362,7 @@ alias jeksnow='jek serve --skip-initial-build'
 alias elvs='npx @11ty/eleventy --serve --watch'
 
 # GO
-export GOROOT=/usr/lib/go
+export GOROOT=/snap/go/current
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 export PATH=$PATH:$HOME/.local/bin # python/pip/aws
@@ -373,6 +393,7 @@ if [ -f "$DOTFILES/.git-completion.txt" ] ; then
   #__git_complete co _git_checkout
   #__git_complete merge _git_merge
 fi
+alias g='git'
 alias gco='git checkout'
 alias gcopr='hub pr checkout'
 alias gbr='git branch'
@@ -396,6 +417,7 @@ alias gl='git log'
 alias gnomerge='git merge --no-commit --no-ff'
 function gpall  { git add . ;  git commit -m "$*" ; git push; }
 
+# JOB CONTROL
 trap_with_arg() { # from http://stackoverflow.com/a/2183063/804678
   local func="$1"; shift
   for sig in "$@"; do
@@ -407,8 +429,7 @@ function handle_sigint() {
   for proc in `jobs -p` ; do kill $proc ; done
 }
 
-# JOBS
-# ps search
+# search for jobs
 function pss { ps aux | grep $1 | grep -v grep ; }
 
 # NETWORKING
@@ -451,8 +472,15 @@ function perf {
   curl -o /dev/null  -s -w "%{time_connect} + %{time_starttransfer} = %{time_total}\n" "$1"
 }
 
+alias glow='glow -s light'
+
 # POCKET
-function pocketadd { pocket-cli add --url $1; }
+function pocketadd {
+  for url in $@; do
+    echo "Adding $url"
+    pocket-cli add --url $1;
+  done
+}
 
 # "private helper"
 function vbump() {
@@ -637,6 +665,14 @@ function aptfree {
   sudo rm /var/lib/dpkg/lock /var/lib/dpkg/lock-frontend;
 }
 
+# https://askubuntu.com/questions/646884/how-can-i-remove-all-ppa
+# dry run of purging
+function listppas {
+  find /etc/apt/sources.list.d -type f -name "*.list" -print0 | while read -d $'\0' file; do
+    awk -F/ '/deb / && /ppa\.launchpad\.net/ {print "sudo ppa-purge ppa:"$4"/"$5}' "$file"
+  done
+}
+
 ### PASSWORDS
 
 function hardpass {
@@ -697,4 +733,4 @@ if [[ -n "$TMUX" ]] ; then
 fi
 
 #export PATH=$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb:$GRADLE_HOME/bin:$HOME/.npm
-export PATH=$HOME/.n/bin:$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb:$GRADLE_HOME/bin
+export PATH=$HOME/.n/bin:$HOME/.npm/bin:$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb:$GRADLE_HOME/bin
