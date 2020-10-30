@@ -1,0 +1,17 @@
+[user]
+  email = michael@mahemoff.com
+  name = Michael Mahemoff
+#[commit]
+  #template = ~/dotfiles/gitmessage
+[push]
+  default = upstream
+[alias]
+  # some from https://victorzhou.com/blog/git-aliases/
+  cl = clone
+  co = checkout
+  d = diff
+  last = log -1 HEAD
+  lo = log --oneline -n 10
+  pr = pull --rebase
+  s = status
+  br = branch
