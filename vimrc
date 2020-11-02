@@ -39,6 +39,18 @@ map <Leader>= <c-w>o:set nonumber<cr>
 map <Leader>- <c-w>o:set number<cr>
 map <Leader>a :Ag<space>
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" TERMINAL WINDOW
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+" vim-powered terminal in split window
+map <Leader>t :term ++close<cr>
+tmap <leader>t <c-w>:term ++close<cr>
+
+" vim-powered terminal in new tab
+map <Leader>T :tab term ++close<cr>
+tmap <Leader>T <c-w>:tab term ++close<cr>
+
 if has("mac")
   set clipboard=unnamed
 elseif has("unix")
