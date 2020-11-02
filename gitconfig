@@ -15,3 +15,5 @@
   pr = pull --rebase
   s = status
   br = branch
+[filter "spacify"]
+	clean = expand --tabs=4 --initial

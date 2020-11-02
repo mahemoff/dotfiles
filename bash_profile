@@ -359,7 +359,8 @@ alias jeksi='jek serve --incremental'
 alias jeksnow='jek serve --skip-initial-build'
 
 # ELEVENTY
-alias elvs='npx @11ty/eleventy --serve --watch'
+alias elv='npx @11ty/eleventy'
+alias elvs='elv --serve --watch'
 
 # GO
 export GOROOT=/snap/go/current
