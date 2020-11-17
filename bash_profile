@@ -188,7 +188,7 @@ alias md='mkdir'
 alias l=less
 alias ta='tail -fqn0'
 alias ag='ag --silent'
-export BAT_THEME='GitHub' # for bat, alternative to cat
+export BAT_THEME='TwoDark' # for bat, alternative to cat
 function lmd { pandoc doc/design/design.md | lynx -stdin ; }
 
 # LISTING FILES (LS)
@@ -482,6 +482,7 @@ function pocketadd {
     pocket-cli add --url $1;
   done
 }
+alias padd=pocketadd
 
 # "private helper"
 function vbump() {
@@ -729,9 +730,12 @@ if [ "$(uname)" == "Darwin" ]; then
   function flushdns { sudo dscacheutil -flushcache;sudo killall -HUP mDNSResponder; }
 fi
 
+#export PATH=$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb:$GRADLE_HOME/bin:$HOME/.npm
+export PATH=$HOME/.n/bin:$HOME/.npm/bin:$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb:$GRADLE_HOME/bin
+
+# source this last to avoid weird xmodmap message
+# https://forums.fedoraforum.org/showthread.php?296298-xmodmap-please-release-the-following-keys-within-2-seconds
 if [[ -n "$TMUX" ]] ; then
   source $HOME/dotfiles/bash_tmux
 fi
 
-#export PATH=$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb:$GRADLE_HOME/bin:$HOME/.npm
-export PATH=$HOME/.n/bin:$HOME/.npm/bin:$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb:$GRADLE_HOME/bin
