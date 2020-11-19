@@ -216,3 +216,16 @@ nnoremap [R :%bd<CR>:cfirst<CR>:vertical Gdiffsplit<CR>
 
 " https://github.com/JamshedVesuna/vim-markdown-preview
 let vim_markdown_preview_github=1
+
+" AUTOREAD
+" https://vi.stackexchange.com/a/14833
+set autoread
+fun! s:checktime(timer_id)
+    for buf in filter(map(getbufinfo(), {_, v -> v.bufnr}), {_, v -> buflisted(v)})
+        echom buf
+        exe 'checktime' buf
+    endfor
+    call timer_start(3000, function('s:checktime'))
+endfun
+call timer_start(3000, function('s:checktime'))
+
