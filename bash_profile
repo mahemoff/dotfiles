@@ -351,6 +351,7 @@ alias nodex='node --experimental-modules'
 alias npi='npm install'
 alias npid='npm install --save-dev'
 alias npu='npm uninstall'
+alias y=yarn
 
 # JEKYLL
 alias jek='bundle exec jekyll'
@@ -361,6 +362,9 @@ alias jeksnow='jek serve --skip-initial-build'
 # ELEVENTY
 alias elv='npx @11ty/eleventy'
 alias elvs='elv --serve --watch'
+
+# REDWOOD
+alias rw='yarn redwood'
 
 # GO
 export GOROOT=/snap/go/current
