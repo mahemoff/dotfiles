@@ -5,7 +5,7 @@
 #    maybe using if-shell 'test "$(uname)" = "Linux"' 'source ~/.tmux-linux.conf'
 # See: https://gist.github.com/mahemoff/5288473
 if [[ -n "$SSH_CLIENT" ]]; then
-  # ssh session
+  # we're running nested tmux inside ssh session
   tmux unbind c-b
   tmux set -g prefix \` > /dev/null
   tmux bind -n c-q send-keys '`'
@@ -16,15 +16,18 @@ if [[ -n "$SSH_CLIENT" ]]; then
   tmux bind C-c run "tmux save-buffer - | pbcopy-remote"
   tmux bind C-v run "tmux set-buffer $(pbpaste-remote); tmux paste-buffer"
 elif [[ "$(uname)" == "Darwin" ]] ; then
-  # macos
+  echo 'Tmux darwin'
+  tmux set-option -g prefix C-b
+  # we're running macos (assumed as local and therefore not nested, since i don't use macos servers)
+  # using Karabiner with "tmux-prefix" script at https://ke-complex-modifications.pqrs.org
   tmux set-option -g default-command "reattach-to-user-namespace -l bash" > /dev/null
   tmux bind C-c run "tmux save-buffer - | reattach-to-user-namespace pbcopy"
   tmux bind C-v run "reattach-to-user-namespace pbpaste | tmux load-buffer - && tmux paste-buffer"
 else
-  # regular desktop linux
+  # we're running regular desktop linux
   # map prefix to F12. Meanwhile, we should separately use xmodmap to map CAPS LOCK to F12
+  #tmux set-option -g prefix F12 # https://bbs.archlinux.org/viewtopic.php?id=198270
   xmodmap -e "keycode 66 = F12" -e 'clear Lock'
-  tmux set-option -g prefix F12 # https://bbs.archlinux.org/viewtopic.php?id=198270
   tmux bind-key F12 last-window
 fi
 

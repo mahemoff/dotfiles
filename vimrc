@@ -229,3 +229,7 @@ fun! s:checktime(timer_id)
 endfun
 call timer_start(3000, function('s:checktime'))
 
+" COLOR SCHEME
+if has("mac")
+  colorscheme zellner
+endif

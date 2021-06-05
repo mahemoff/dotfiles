@@ -171,6 +171,7 @@ alias rbp='nocaps; source $HOME/.bash_profile' # "reset" mode to force nocaps
 alias RBP=rbp
 function bpg { ag $@ $HOME/.bash_profile; }
 alias ba='vi $HOME/.bash_after'
+alias bt='vi $HOME/.bash_tmux'
 alias a='vi $HOME/.bash_profile'
 function dotfiles {
   (cd ~/dotfiles ; git pull; ./make.sh)
@@ -727,6 +728,7 @@ alias NOCAPS=nocaps
 
 ### OSX
 if [ "$(uname)" == "Darwin" ]; then
+  export BASH_SILENCE_DEPRECATION_WARNING=1
   function iphonebackupdisable { defaults write com.apple.iTunes DeviceBackupsDisabled -bool true ; }
   function iphonebackupenable  { defaults write com.apple.iTunes DeviceBackupsDisabled -bool false ; }
   function startmysql { launchctl load ~/Library/LaunchAgents/com.mysql.mysqld.plist; }
@@ -741,5 +743,5 @@ export PATH=$HOME/.n/bin:$HOME/.npm/bin:$HOME/.rubies/ruby-2.6.5/bin:/usr/local/
 # https://forums.fedoraforum.org/showthread.php?296298-xmodmap-please-release-the-following-keys-within-2-seconds
 if [[ -n "$TMUX" ]] ; then
   source $HOME/dotfiles/bash_tmux
+  tmux display-message -p "Welcome to tmux. Prefix key is: #{prefix}"
 fi
-
