@@ -5,6 +5,13 @@ Mahemoff's Unix dotfiles such as bash\_profile and vimrc, designed to be cloned
 onto new machines. To bootstrap a new machine, git clone this and run make.sh,
 which will set up the symlinks.
 
+### Basic setup
+
+```
+git clone git@github.com:mahemoff/dotfiles.git
+dotfiles/make.sh
+```
+
 ### Installing Vim Plugins
 
 Based on
