@@ -23,6 +23,14 @@ adding a new plugin looks like this:
 And updating it looks like this:
 
     git subtree pull --prefix .vim/bundle/vim-fugitive https://github.com/tpope/vim-fugitive.git master --squash
+    
+### Recommended tools
+
+To enhance your scripting pleasure, these tools are recommended:
+
+```
+apt install git tig mycli mosh pv
+```
 
 ### License
 
