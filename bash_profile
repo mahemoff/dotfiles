@@ -691,6 +691,13 @@ function hardpass {
   pwgen -1 -y -s $length
 }
 
+### APT
+function apti { sudo apt install $@; }
+function aptrm { sudo apt remove $@; }
+
+### LAUNCHERS
+alias rof='rofi -combi-modi window,drun,ssh -theme solarized -font "hack 32" -show combi'
+
 ### TO CATEGORISE
 function gzxml {
   gunzip -c $1 | xmllint --format -
