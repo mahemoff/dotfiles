@@ -212,7 +212,7 @@ function higrep { history | grep -i $1 | tail -5; }
 # RUNNING APPS
 #function vi { (vim.gtk3 $* > /dev/null) || vim $* ; }
 #function vi { vim $* ; } 
-#alias vi=vim
+alias vi=vim
 
 # vim with support for line number specified by colon
 VIM=$(which vim)
