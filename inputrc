@@ -9,3 +9,6 @@ set menu-complete-display-prefix on
 "\e\e[B": history-search-forward
 "\e[Z": menu-complete-backward
 "p": self-insert
+
+set editing-mode vi
+set keymap vi-command
