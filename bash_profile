@@ -62,6 +62,7 @@ function mon {
 
 # PATH
 export DOTFILES="$HOME/dotfiles"
+function path { echo "${PATH//:/$'\n'}" | sort; } # show path separated by newlines
 
 # FILES
 alias chx='chmod u+x'
@@ -77,6 +78,9 @@ export GRADLE_HOME=/opt/gradle/gradle-5.0
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 function duh { (cd ${1:-.} ; du -sh * | sort -h ; echo '--'; du -sh .) }
 function dfh { df -h ${1:-.} ; }
+
+# STATS ON FILES
+function wch { printf "%'d\n" $(wc -l < $1 );  } # human-readable wc (macos doesn't support -h)
 
 # SHELL OPTIONS
 set -o vi
@@ -169,7 +173,7 @@ alias sbp='source $HOME/.bash_profile'
 alias SBP=sbp
 alias rbp='nocaps; source $HOME/.bash_profile' # "reset" mode to force nocaps
 alias RBP=rbp
-function bpg { ag $@ $HOME/.bash_profile; }
+function bpg { rg $@ $HOME/.bash_profile; }
 alias ba='vi $HOME/.bash_after'
 alias bt='vi $HOME/.bash_tmux'
 alias a='vi $HOME/.bash_profile'
@@ -240,6 +244,10 @@ alias xc='xclip -selection c'
 export EDITOR=vim
 alias vm="vi $HOME/.vimrc"
 
+### OBSIDIAN
+# https://forum.obsidian.md/t/vim-enable-key-repeat-option/1095/7 - Vim repeat mode
+defaults write md.obsidian ApplePressAndHoldEnabled -bool false
+
 # https://stackoverflow.com/a/17986639/18706
 # "vi new" alias to idempotently create and start editing the file at any path
 # e.g. vin foo/bar/baz makes new foo/bar folder and the file
@@ -277,7 +285,7 @@ function nb {
 # PYTHON
 alias httpserver='python -m SimpleHTTPServer'
 export WORKON_HOME=$HOME/.virtualenvs
-alias py='python3.8'
+alias py='python3.9'
 #alias pipinstall='py -m pip install -r requirements.txt'
 alias pipinstall='py -m pip install'
 alias pipfreeze='py -m pip freeze > requirements.txt'
@@ -370,9 +378,8 @@ alias rw='yarn redwood'
 # GO
 export GOROOT=/snap/go/current
 export GOPATH=$HOME/go
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-export PATH=$PATH:$HOME/.local/bin # python/pip/aws
-
+#export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+#export PATH=$PATH:$HOME/.local/bin # python/pip/aws
 
 # TMUX
 function shell { tmux rename-window $1; ssh -o TCPKeepAlive=no -o ServerAliveInterval=15 $1; tmux rename-window 'bash'; }
@@ -717,8 +724,6 @@ function nocaps {
 }
 alias NOCAPS=nocaps
 
-#[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-
 # Caps lock for tmux
 # https://unix.stackexchange.com/a/241659/36161
 #setxkbmap -layout us -option ctrl:nocaps
@@ -736,12 +741,97 @@ if [ "$(uname)" == "Darwin" ]; then
   function flushdns { sudo dscacheutil -flushcache;sudo killall -HUP mDNSResponder; }
 fi
 
-#export PATH=$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb:$GRADLE_HOME/bin:$HOME/.npm
-export PATH=$HOME/.n/bin:$HOME/.npm/bin:$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb:$GRADLE_HOME/bin
+### HOMEBREW
+export HOMEBREW_CELLAR='/usr/local/Cellar'
+alias bru='arch -arm64 brew' # run brew under rosetta (goes in /opt/homebrew folder). note terminal app should have "run under rosetta" checked under file properties
+alias brui='bru install'
+
+### AUDIO
+
+# https://gist.github.com/kentbye/3843248
+# txt2mp3 url <words-per-minute>
+# Macos function relies on "say" and ffmpeg
+# Converts to an audio file at <words-per-minute>. I personally select the UK's Serena as the Mac default voice 
+function txt2mp3 {
+	#FULLFILE=$1;
+	#FILE="${FULLFILE%%.*}";
+	FILE=$1
+  VOICE='lee' # try say -v'?' for full list of voices
+	# WPM=${2:-180}
+	echo "converting $FILE.txt to $FILE.aiff";
+	#`say -f $FILE -r 310 -o $FILE.aiff --progress`;
+  rm $FILE.aiff $FILE.mp3
+	`say -v $VOICE -f $FILE -o $FILE.aiff --progress`;
+	echo "conververting $FILE.aiff to $FILE.mp3";
+	`ffmpeg -i $FILE.aiff $FILE.mp3`;
+	# Change the MP3 ID3 for the Album
+	#id3tag -A$FILE $FILE.mp3;
+	`rm $FILE.aiff`;
+}
+
+# https://gist.github.com/kentbye/3843248
+# Macos function relies on "say" and ffmpeg
+function web2mp3 {
+	URL=$1
+	TEXTFILE=webmp3.$$.txt
+	trafilatura -u $URL > $TEXTFILE
+	txt2mp3 $TEXTFILE
+}
+
+##############################################################################
+### PATH ###
+##############################################################################
+
+#$HOME/.rubies/ruby-2.6.5/bin:\
+
+PATH=''
+
+if [ "$(/usr/bin/uname)" == "Darwin" ]; then
+  echo "Setting Darwin Path"
+  PATH+="\
+/opt/homebrew/bin:\
+$HOME/.n/bin:\
+/opt/homebrew/opt/openjdk/bin:\
+/opt/homebrew/opt/python/libexec/bin"
+else # ubuntu
+  echo "Setting Ubuntu Path"
+  PATH+="\
+/usr/games:\
+/usr/local/games:\
+/snap/bin"
+fi
+
+echo "Appending General Path"
+export PATH+=":\
+$HOME/bin:\
+$HOME/.local/bin:\
+$HOME/.n/bin:\
+#$HOME/.rvm/gems/ruby-3.0.2/bin:\
+$HOME/dotfiles/bin:\
+/usr/local/sbin:\
+/usr/local/bin:\
+/usr/sbin:\
+/usr/bin:\
+/sbin:\
+/bin:\
+~/.local/bin/:$HOME/.fzf/bin:\
+/usr/lib/go/bin:\
+$HOME/go/bin:\
+$HOME/.local/bin"
+#$HOME/bin/gyb"
+
+# RVM (run after path)
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
+#export PATH="/opt/homebrew/opt/ruby/bin:/opt/homebrew/opt/openjdk/bin:$PATH:/opt/homebrew/bin:$HOME/.n/bin:$HOME/.npm/bin:$HOME/.rubies/ruby-2.6.5/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$HOME/bin:$HOME/dotfiles/bin:~/.local/bin/:$HOME/.fzf/bin:/usr/lib/go/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/bin/gyb:$GRADLE_HOME/bin"
+
+##############################################################################
+### FINALISE TMUX ###
+##############################################################################
 
 # source this last to avoid weird xmodmap message
 # https://forums.fedoraforum.org/showthread.php?296298-xmodmap-please-release-the-following-keys-within-2-seconds
 if [[ -n "$TMUX" ]] ; then
   source $HOME/dotfiles/bash_tmux
-  tmux display-message -p "Welcome to tmux. Prefix key is: #{prefix}"
+  #tmux display-message -p "Welcome to tmux. Prefix key is: #{prefix}"
 fi
