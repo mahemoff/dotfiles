@@ -216,7 +216,7 @@ function higrep { history | grep -i $1 | tail -5; }
 # RUNNING APPS
 #function vi { (vim.gtk3 $* > /dev/null) || vim $* ; }
 #function vi { vim $* ; } 
-#alias vi=vim
+alias vi=vim
 
 # vim with support for line number specified by colon
 VIM=$(which vim)
@@ -697,6 +697,13 @@ function hardpass {
   fi
   pwgen -1 -y -s $length
 }
+
+### APT
+function apti { sudo apt install $@; }
+function aptrm { sudo apt remove $@; }
+
+### LAUNCHERS
+alias rof='rofi -combi-modi window,drun,ssh -theme solarized -font "hack 32" -show combi'
 
 ### TO CATEGORISE
 function gzxml {
