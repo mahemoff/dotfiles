@@ -14,6 +14,7 @@ set ttym=xterm2
 set ignorecase
 set ruler
 set scrolloff=999
+set foldlevel=999
 set shiftwidth=2 tabstop=2 expandtab
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*.sassc
 set backupdir=$HOME/.vim/_backup
