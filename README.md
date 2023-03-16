@@ -32,6 +32,10 @@ To enhance your scripting pleasure, these tools are recommended:
 apt install git tig mycli mosh pv
 ```
 
+### Related docs
+
+[MySQL tuning](https://gist.github.com/mahemoff/24a5a68e4d6b1f385af7826d195d79f0)
+
 ### License
 
 The MIT License (MIT)
