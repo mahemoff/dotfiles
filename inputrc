@@ -1,14 +1,32 @@
-set editing-mode vi
-set keymap vi-command
+##############################################################################
+# COMPLETION PREFERENCES
+##############################################################################
+
 set show-all-if-ambiguous on
 set completion-ignore-case on
 set menu-complete-display-prefix on
-"p": "i !!*\r"
 
+##############################################################################
+# SHORTCUTS
+##############################################################################
+
+# "p": "i !!*\r"
 "\e\e[A": history-search-backward
 "\e\e[B": history-search-forward
 "\e[Z": menu-complete-backward
 "p": self-insert
 
+##############################################################################
+# VI MODE
+##############################################################################
+
 set editing-mode vi
 set keymap vi-command
+
+# map jk to escape (https://vim.fandom.com/wiki/Avoid_the_escape_key)
+$if mode=vi
+	set keymap vi-command
+	"jk": vi-insertion-mode
+	set keymap vi-insert
+	"jk": vi-movement-mode
+$endif

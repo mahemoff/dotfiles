@@ -8,6 +8,10 @@ let mapleader = ","
 syntax on
 
 " set mouse=a (breaks tmux clipboard)
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" GENERAL PREFERENCES
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
 set wrap
 set ttym=xterm2
@@ -29,21 +33,41 @@ set secure
 set number
 set shortmess+=A " suppress warning
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" SHORTHAND MAPPINGS
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 nmap Q gq
 nmap <Leader>n <plug>NERDTreeTabsToggle<CR>
 let NERDTreeShowHidden=1 " Show dotfiles
 nmap T gT
 nmap Y gt
 nmap to :tabonly<cr>
+
 map <Leader>s :NERDTreeFind<CR>
 map <Leader>= <c-w>o:set nonumber<cr>
 map <Leader>- <c-w>o:set number<cr>
 map <Leader>a :Ag<space>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" SHORTHAND MAPPINGS
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Faster way to leave insert mode than <esc> and better for keyboards which
+" don't have <Esc> (e.g. some Apple hardware). We'll also disable <Esc> to
+" force muscle memory to use this
+" Note: Use "<Esc>" here in that case format to align with Obsidian vimrc
+" plugin (https://github.com/esm7/obsidian-vimrc-support/issues/18)
+inoremap jk <Esc>
+inoremap <Esc> <Nop>
+
+" Quick save
+inoremap jl <C-o>:w<Enter>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " TERMINAL WINDOW
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"
+
 " vim-powered terminal in split window
 map <Leader>t :term ++close<cr>
 tmap <leader>t <c-w>:term ++close<cr>

@@ -83,10 +83,15 @@ function dfh { df -h ${1:-.} ; }
 function wch { printf "%'d\n" $(wc -l < $1 );  } # human-readable wc (macos doesn't support -h)
 
 # SHELL OPTIONS
-set -o vi
 shopt -s checkwinsize # Sync window size with shell
 #shopt -s globstar # Better globbing in file expansions
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)" # Binary less support
+
+# SHELL VI MODE
+# See also inputrc as we are mapping jk to <esc>
+set -o vi
+#bind -m vi-insert "\C-x": self-insert
+#bind -m vi-insert "\C-j": "\C-x\C-j"
 
 #### PROMPT
 if [ "$OS" == 'linux' ] ; then
@@ -245,6 +250,7 @@ export EDITOR=vim
 alias vm="vi $HOME/.vimrc"
 
 ### OBSIDIAN
+export OBSIDIAN_VAULT_ROOT="$HOME/Documents/obsidian"
 # https://forum.obsidian.md/t/vim-enable-key-repeat-option/1095/7 - Vim repeat mode
 defaults write md.obsidian ApplePressAndHoldEnabled -bool false
 
