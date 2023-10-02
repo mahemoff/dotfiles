@@ -652,11 +652,6 @@ function updatevimplugin {
   git subtree pull --prefix vim/bundle/`basename $repo .git` $repo master --squash
 }
 
-### LOCAL MACHINE - AFTER
-if [ -f $HOME/dotfiles/bash_after ] ; then
-  source $HOME/dotfiles/bash_after
-fi
-
 ### DNS
 
 function flushdns { sudo /etc/init.d/nscd restart; }
@@ -847,4 +842,9 @@ $HOME/.local/bin"
 if [[ -n "$TMUX" ]] ; then
   source $HOME/dotfiles/bash_tmux
   #tmux display-message -p "Welcome to tmux. Prefix key is: #{prefix}"
+fi
+
+### LOCAL MACHINE - AFTER
+if [ -f $HOME/dotfiles/bash_after ] ; then
+  source $HOME/dotfiles/bash_after
 fi
