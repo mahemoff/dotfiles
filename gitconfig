@@ -17,3 +17,5 @@
   br = branch
 [filter "spacify"]
   clean = expand --tabs=2 --initial
+[core]
+  editor = /usr/bin/vim
