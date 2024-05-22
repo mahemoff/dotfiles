@@ -5,6 +5,17 @@ Mahemoff's Unix dotfiles such as bash\_profile and vimrc, designed to be cloned
 onto new machines. To bootstrap a new machine, git clone this and run make.sh,
 which will set up the symlinks.
 
+### New machine setup
+
+If installing this on a new Linux instance, generate a new ssh key:
+
+```
+ssh-keygen -t ed25519
+cat ~/.ssh/id_ed25519.pub
+```
+
+Then log into https://github.com/settings/keys and click "New SSH Key", pasting the pub key output from above as a new key.
+
 ### Basic setup
 
 ```
@@ -29,7 +40,7 @@ And updating it looks like this:
 To enhance your scripting pleasure, these tools are recommended:
 
 ```
-apt install git tig mycli mosh pv
+apt install vim tmux git tig mycli mosh pv
 ```
 
 ### Related docs
