@@ -252,7 +252,9 @@ alias vm="vi $HOME/.vimrc"
 ### OBSIDIAN
 export OBSIDIAN_VAULT_ROOT="$HOME/Documents/obsidian"
 # https://forum.obsidian.md/t/vim-enable-key-repeat-option/1095/7 - Vim repeat mode
-defaults write md.obsidian ApplePressAndHoldEnabled -bool false
+if [ "$(uname)" == "Darwin" ]; then
+  defaults write md.obsidian ApplePressAndHoldEnabled -bool false
+fi
 
 # https://stackoverflow.com/a/17986639/18706
 # "vi new" alias to idempotently create and start editing the file at any path
@@ -848,3 +850,4 @@ fi
 if [ -f $HOME/dotfiles/bash_after ] ; then
   source $HOME/dotfiles/bash_after
 fi
+. "$HOME/.cargo/env"
