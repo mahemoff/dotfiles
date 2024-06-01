@@ -2,28 +2,69 @@ Dotfiles
 ========
 
 Mahemoff's Unix dotfiles such as bash\_profile and vimrc, designed to be cloned
-onto new machines. To bootstrap a new machine, git clone this and run make.sh,
-which will set up the symlinks.
+onto new machines.
 
-### New machine setup
+Instructions below are optimised for recent versions of Ubuntu.
 
-If installing this on a new Linux instance, generate a new ssh key:
+# Setup
+
+## Git
+
+You'll need github access to clone the repo, so install git:
+
+```
+apt install git
+```
+
+Generate a new ssh key:
 
 ```
 ssh-keygen -t ed25519
 cat ~/.ssh/id_ed25519.pub
 ```
 
-Then log into https://github.com/settings/keys and click "New SSH Key", pasting the pub key output from above as a new key.
+Now log into https://github.com/settings/keys and click "New SSH Key", pasting the pub key output from above as a new key.
 
-### Basic setup
+## Install dotfiles
 
 ```
 git clone git@github.com:mahemoff/dotfiles.git
 dotfiles/make.sh
 ```
 
-### Installing Vim Plugins
+## Install cool tools
+
+Install recommended tools:
+
+```
+apt install vim-gtk3 tmux git tig mycli mosh pv tig httpie
+```
+
+## Install terminal tools
+
+These don't yet have standard apt packages and rely on rust, therefore need rustup and a bunch of tools suggested by [alacritty docs](https://github.com/alacritty/alacritty/blob/master/INSTALL.md).
+
+```
+apt install rustup build-essential cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
+cargo install alacritty zellij
+```
+
+For modern terminal muxing on a desktop PC, use:
+
+```
+cargo install alacritty
+cargo install --locked zellij
+```
+
+# Maintenance
+
+## Updating dotfiles
+
+Dotfiles are kept in dotfiles folder and symlinked - by the make.sh screipt - to the location expected by the shell, e.g. dotfiles/bash_profile. Therefore you can just edit dotfiles as normal, e.g. `vi ~/.bash_profile` or can also edit it in the dotfiles folder `vi ~/dotfile/bash_profile` ... same thing either way. Remember to push changes after updates that are meant to be persisted.
+
+For changes that are specific to the install, there are additional sourced files that are git-ignored, e.g. `dotfiles/bash_after`.
+
+## Installing Vim Plugins
 
 Based on
 [this](http://endot.org/2011/05/18/git-submodules-vs-subtrees-for-vim-plugins/),
@@ -35,26 +76,11 @@ And updating it looks like this:
 
     git subtree pull --prefix .vim/bundle/vim-fugitive https://github.com/tpope/vim-fugitive.git master --squash
 
-### Recommended tools
-
-To enhance your scripting pleasure, these tools are recommended:
-
-```
-apt install vim-gtk3 tmux git tig mycli mosh pv tig
-```
-
-For modern terminal muxing on a desktop PC, use:
-
-```
-cargo install alacritty
-cargo install --locked zellij
-```
-
-### Related docs
+## Specialised setup
 
 [MySQL tuning](https://gist.github.com/mahemoff/24a5a68e4d6b1f385af7826d195d79f0)
 
-### License
+# License
 
 The MIT License (MIT)
 
