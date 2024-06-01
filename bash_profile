@@ -438,6 +438,10 @@ alias gl='git log'
 alias gnomerge='git merge --no-commit --no-ff'
 function gpall  { git add . ;  git commit -m "$*" ; git push; }
 
+# GNOME
+export XDG_DATA_DIRS="$XDG_DATA_DIRS:$HOME/.local/share/applicatons"
+
+
 # JOB CONTROL
 trap_with_arg() { # from http://stackoverflow.com/a/2183063/804678
   local func="$1"; shift
@@ -827,6 +831,7 @@ $HOME/dotfiles/bin:\
 ~/.local/bin/:$HOME/.fzf/bin:\
 /usr/lib/go/bin:\
 $HOME/go/bin:\
+$HOME/.cargo/bin:\
 $HOME/.local/bin"
 #$HOME/bin/gyb"
 
@@ -850,4 +855,4 @@ fi
 if [ -f $HOME/dotfiles/bash_after ] ; then
   source $HOME/dotfiles/bash_after
 fi
-. "$HOME/.cargo/env"
+#. "$HOME/.cargo/env"
