@@ -34,13 +34,20 @@ adding a new plugin looks like this:
 And updating it looks like this:
 
     git subtree pull --prefix .vim/bundle/vim-fugitive https://github.com/tpope/vim-fugitive.git master --squash
-    
+
 ### Recommended tools
 
 To enhance your scripting pleasure, these tools are recommended:
 
 ```
-apt install vim tmux git tig mycli mosh pv
+apt install vim-gtk3 tmux git tig mycli mosh pv tig
+```
+
+For modern terminal muxing on a desktop PC, use:
+
+```
+cargo install alacritty
+cargo install --locked zellij
 ```
 
 ### Related docs
