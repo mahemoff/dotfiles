@@ -93,12 +93,33 @@ set -o vi
 #bind -m vi-insert "\C-x": self-insert
 #bind -m vi-insert "\C-j": "\C-x\C-j"
 
+###############################################################################
 #### PROMPT
+###############################################################################
+
+RED='\033[00;31m'
+GREEN='\033[00;32m'
+YELLOW='\033[00;33m'
+BLUE='\033[00;34m'
+PURPLE='\033[00;35m'
+CYAN='\033[00;36m'
+LIGHTGRAY='\033[00;37m'
+
+LRED='\033[01;31m'
+LGREEN='\033[01;32m'
+LYELLOW='\033[01;33m'
+LBLUE='\033[01;34m'
+LPURPLE='\033[01;35m'
+LCYAN='\033[01;36m'
+WHITE='\033[01;37m'
+
 if [ "$OS" == 'linux' ] ; then
-  export PS1="\u@\h \[\033[32m\]\w\[\033[33m\]\$(parse_git_branch)\[\033[00m\] $ "
+  export PS1="${GREEN}\u@\h${WHITE}:${BLUE}\w${YELLOW}\$(parse_git_branch) ${WHITE}$ "
 else
   export PS1="\u@\h:\w \[$txtcyn\]\$git_branch\[$txtred\]\$git_dirty\[$txtrst\]\$ "
 fi
+
+################################################################################
 
 #### TERMINAL
 
