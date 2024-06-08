@@ -87,5 +87,18 @@ for file in $files; do
   ln -sf $dir/$file ~/.$file
 done
 
+# symlink config files to ~/.config
+mkdir -p $HOME/.config
+mkdir -p $backupdir/config
+for config_folder in config/*; do
+  app_name=$(basename $config_folder)
+  config_dest="$HOME/.config/$app_name"
+  echo $app_name to $config_dest
+  if [ -d "$backupdir/config/$app_name" ] ; then rm -fr $backupdir/config/$app_name ; fi # suppress silly "identical file error" from mv
+  mv ~/.config/$app_name $backupdir 2>/dev/null
+  log "Creating symlink to .config/$app_name in home directory."
+  ln -sf $dir/config/$app_name ~/.config
+done
+
 # app-specific configs
 setup_karabiner
