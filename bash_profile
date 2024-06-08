@@ -829,14 +829,14 @@ $HOME/.n/bin:\
 /opt/homebrew/opt/openjdk/bin:\
 /opt/homebrew/opt/python/libexec/bin"
 else # ubuntu
-  echo "Setting Ubuntu Path"
+  # echo "Setting Ubuntu Path"
   PATH+="\
 /usr/games:\
 /usr/local/games:\
 /snap/bin"
 fi
 
-echo "Appending General Path"
+#echo "Appending General Path"
 export PATH+=":\
 $HOME/bin:\
 $HOME/.local/bin:\
@@ -877,3 +877,4 @@ if [ -f $HOME/dotfiles/bash_after ] ; then
   source $HOME/dotfiles/bash_after
 fi
 #. "$HOME/.cargo/env"
+echo 'Welcome, elf'
