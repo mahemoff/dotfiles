@@ -1,0 +1,36 @@
+default_shell "/bin/bash"
+
+keybinds {
+  normal {
+
+    //////////////////////////////////////////////////////////////////////
+    // PREVENT VIM CONFLICTS
+    // Use alt to change mode instead of ctrl
+    //////////////////////////////////////////////////////////////////////
+
+    bind "Alt g" { SwitchToMode "Locked"; }
+    unbind "Ctrl g"
+
+    bind "Alt p" { SwitchToMode "Pane"; }
+    unbind "Ctrl p"
+
+    bind "Alt t" { SwitchToMode "Tab"; }
+    unbind "Ctrl t"
+
+    bind "Alt r" { SwitchToMode "Resize"; }
+    unbind "Ctrl n"
+
+    bind "Alt m" { SwitchToMode "Move"; }
+    unbind "Ctrl h"
+
+    bind "Alt /" { SwitchToMode "Search"; }
+    unbind "Ctrl s"
+
+    bind "Alt s" { SwitchToMode "Session"; }
+    unbind "Ctrl o"
+
+    bind "Alt q" { Quit; }
+    unbind "Ctrl q"
+
+  }
+}
