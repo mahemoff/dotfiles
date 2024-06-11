@@ -40,12 +40,12 @@ Install recommended tools:
 apt install vim-gtk3 tmux git tig mycli mosh pv tig httpie
 ```
 
-## Install terminal tools
+## Install window manager and terminal tools
 
-These don't yet have standard apt packages and rely on rust, therefore need rustup and a bunch of tools suggested by [alacritty docs](https://github.com/alacritty/alacritty/blob/master/INSTALL.md).
+Alacritty and Zellij  don't yet have standard apt packages and rely on rust, therefore need rustup and a bunch of tools suggested by [alacritty docs](https://github.com/alacritty/alacritty/blob/master/INSTALL.md).
 
 ```
-apt install rustup build-essential cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
+apt install i3 rofi rustup build-essential cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
 cargo install alacritty zellij
 ```
 
@@ -53,7 +53,7 @@ For modern terminal muxing on a desktop PC, use:
 
 ```
 cargo install alacritty
-cargo install --locked zellij
+cargo install zellij
 ```
 
 # Maintenance
