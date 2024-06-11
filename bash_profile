@@ -839,6 +839,7 @@ fi
 #echo "Appending General Path"
 export PATH+=":\
 $HOME/bin:\
+$HOME/bin_local:\
 $HOME/.local/bin:\
 $HOME/.n/bin:\
 #$HOME/.rvm/gems/ruby-3.0.2/bin:\
