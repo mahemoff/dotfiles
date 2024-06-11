@@ -1,17 +1,30 @@
 " Pathogen
-filetype off " Pathogen needs to run before plugin indent on
-call pathogen#incubate()
-call pathogen#helptags() " generate helptags for everything in 'runtimepath'
-filetype plugin indent on
+"filetype off " Pathogen needs to run before plugin indent on
+"call pathogen#incubate()
+"call pathogen#helptags() " generate helptags for everything in 'runtimepath'
+"filetype plugin indent on
 
-let mapleader = ","
-syntax on
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" PLUGINS VIA VIMPLUG
+" :PluginInstall, :PlugUpdate, :PlugDiff (~update dry run), :PlugClean (rm all)
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Note: NerdTree should probably be replaced by using Vim's built-in tree
+call plug#begin()
+Plug 'preservim/nerdtree'
+Plug 'jistr/vim-nerdtree-tabs'
+Plug 'tpope/vim-fugitive'
+call plug#end()
 
-" set mouse=a (breaks tmux clipboard)
+" Previous plugins to consider:
+" fzf, gv, undotree, fugitive, gdiff, markdown*, nerdtree-tabs, pug, rails,
+" skim, sneak
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " GENERAL PREFERENCES
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let mapleader = ","
+syntax on
+" set mouse=a (breaks tmux clipboard)
 set nocompatible
 set wrap
 set ttym=xterm2

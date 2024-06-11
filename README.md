@@ -45,15 +45,8 @@ apt install vim-gtk3 tmux git tig mycli mosh pv tig httpie
 Alacritty and Zellij  don't yet have standard apt packages and rely on rust, therefore need rustup and a bunch of tools suggested by [alacritty docs](https://github.com/alacritty/alacritty/blob/master/INSTALL.md).
 
 ```
-apt install i3 rofi rustup build-essential cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
+apt install i3 rofi build-essential cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 rustc cargo 
 cargo install alacritty zellij
-```
-
-For modern terminal muxing on a desktop PC, use:
-
-```
-cargo install alacritty
-cargo install zellij
 ```
 
 # Maintenance
@@ -64,17 +57,9 @@ Dotfiles are kept in dotfiles folder and symlinked - by the make.sh screipt - to
 
 For changes that are specific to the install, there are additional sourced files that are git-ignored, e.g. `dotfiles/bash_after`.
 
-## Installing Vim Plugins
+## Vim Plugins
 
-Based on
-[this](http://endot.org/2011/05/18/git-submodules-vs-subtrees-for-vim-plugins/),
-adding a new plugin looks like this:
-
-    git subtree add --prefix vim/bundle/vim-fugitive https://github.com/tpope/vim-fugitive.git master --squash
-
-And updating it looks like this:
-
-    git subtree pull --prefix .vim/bundle/vim-fugitive https://github.com/tpope/vim-fugitive.git master --squash
+Now using [Vim-Plug](https://github.com/junegunn/vim-plug) to manage plugins. Just declare desired plugins at top of ~/.vimrc and run `:PlugInstall`. Run `:PlugUpdate` to update them.
 
 ## Specialised setup
 
