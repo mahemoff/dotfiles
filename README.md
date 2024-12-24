@@ -6,7 +6,15 @@ onto new machines.
 
 Instructions below are optimised for recent versions of Ubuntu.
 
-# Setup
+# Quick Setup - Read-only version
+
+Can use this to quickly set up a throwaway instance, such as a new Codespace. You won't be able to commit changes.
+
+```
+git clone https://github.com/mahemoff/dotfiles.git && dotfiles/make.sh
+```
+
+# Full setup
 
 ## Git
 
